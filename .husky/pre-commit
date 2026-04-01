@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+# git commit 시 Git이 이 스크립트를 자동 실행합니다. 실패하면 커밋이 취소됩니다.
+set -e
+
+echo ""
+echo "[pre-commit] Husky: 커밋 전 검사를 시작합니다."
+echo ""
+
+echo "[pre-commit] Prettier 포맷 검사 중..."
+npx prettier --cache --check .
+echo "[pre-commit] Prettier: 통과"
+echo ""
+
+echo "[pre-commit] 린트 검사 중..."
+npm run lint
+echo "[pre-commit] 린트: 통과"
+echo ""
+
+echo "[pre-commit] 빌드 검사 중..."
+npm run build
+echo "[pre-commit] 빌드: 통과"
+echo ""
+echo "[pre-commit] 모든 검사를 통과했습니다. 커밋을 진행합니다."
+echo ""
