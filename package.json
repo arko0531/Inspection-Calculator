@@ -7,10 +7,11 @@
     "reset-project": "node ./scripts/reset-project.js",
     "build": "tsc --noEmit",
     "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
+    "ios": "expo start --ios --port 3000",
+    "web": "expo start --web --port 3000",
     "lint": "expo lint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "checkTs": "tsc --noEmit"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
