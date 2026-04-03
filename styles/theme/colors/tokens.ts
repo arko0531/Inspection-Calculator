@@ -1,4 +1,4 @@
-export const Blue = {
+const Blue = {
   0: '#E8F4FF',
   10: '#D0E9FF',
   20: '#A8D4FF',
@@ -15,7 +15,7 @@ export const Blue = {
   800: '#0A1628'
 } as const;
 
-export const Black = {
+const Black = {
   0: '#FFFFFF',
   10: '#F2F2F7',
   20: '#E5E5EA',
@@ -49,7 +49,7 @@ export const Red = {
   800: '#330D0B'
 } as const;
 
-export const Green = {
+const Green = {
   0: '#E8F8EF',
   10: '#CFF0DD',
   20: '#9FDFBB',
@@ -66,7 +66,7 @@ export const Green = {
   800: '#061C0C'
 } as const;
 
-export const Orange = {
+const Orange = {
   0: '#FFF2E5',
   10: '#FFE4CC',
   20: '#FFCA99',
@@ -83,7 +83,7 @@ export const Orange = {
   800: '#331F00'
 } as const;
 
-export const Yellow = {
+const Yellow = {
   0: '#FFF9E6',
   10: '#FFF2CC',
   20: '#FFE799',
@@ -100,7 +100,7 @@ export const Yellow = {
   800: '#332900'
 } as const;
 
-export const Purple = {
+const Purple = {
   0: '#F3EEFF',
   10: '#E8DDFF',
   20: '#D4C2FF',
@@ -115,4 +115,14 @@ export const Purple = {
   600: '#2E125A',
   700: '#220E44',
   800: '#16092E'
+} as const;
+
+export const colors = {
+  Blue,
+  Black,
+  Red,
+  Green,
+  Orange,
+  Yellow,
+  Purple
 } as const;

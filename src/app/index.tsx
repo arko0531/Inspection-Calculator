@@ -1,7 +1,11 @@
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 const App = () => {
-  return <Text>App</Text>;
+  return (
+    <View>
+      <Text className="text-primary typo-h1-30-bold">App</Text>
+    </View>
+  );
 };
 
 export default App;

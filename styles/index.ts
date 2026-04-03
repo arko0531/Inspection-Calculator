@@ -1,17 +1,3 @@
-import { colors } from './theme/colors';
-import typography from './theme/typography';
+export default {};
 
-const theme = {
-  colors,
-  typo: typography
-};
-
-export default theme;
-
-export type {
-  ColorMode,
-  Colors,
-  SemanticColors,
-  Theme,
-  Typography
-} from './types';
+export type { Theme, TypographyToken } from './types';

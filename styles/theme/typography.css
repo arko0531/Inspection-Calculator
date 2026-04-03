@@ -1,0 +1,153 @@
+@utility typo-p1-b50-bold {
+  font-size: 50px;
+  line-height: 60px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+@utility typo-p1-b40-bold {
+  font-size: 40px;
+  line-height: 48px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+@utility typo-h1-30-bold {
+  font-size: 30px;
+  line-height: 36px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+@utility typo-h2-25-bold {
+  font-size: 25px;
+  line-height: 30px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+@utility typo-h3-20-bold {
+  font-size: 20px;
+  line-height: 25px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+@utility typo-h4-18-bold {
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+@utility typo-h5-11-regular {
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+@utility typo-s1-15-regular {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+@utility typo-b1-15-bold {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+@utility typo-b2-13-bold {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+@utility typo-b4-10-bold {
+  font-size: 10px;
+  line-height: 14px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+@utility typo-m1-14-bold {
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+@utility typo-body1-13-bold {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+@utility typo-body1-13-regular {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+@utility typo-body2-12-bold {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+@utility typo-body2-12-regular {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+@utility typo-body3-11-bold {
+  font-size: 11px;
+  line-height: 15px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+@utility typo-body3-11-regular {
+  font-size: 11px;
+  line-height: 15px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+@utility typo-body4-9-regular {
+  font-size: 9px;
+  line-height: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+@utility typo-body4-9-bold {
+  font-size: 9px;
+  line-height: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+@utility typo-body5-8-regular {
+  font-size: 8px;
+  line-height: 11px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+@utility typo-body5-8-bold {
+  font-size: 8px;
+  line-height: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
