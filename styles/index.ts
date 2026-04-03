@@ -8,10 +8,4 @@ const theme = {
 
 export default theme;
 
-export type {
-  ColorMode,
-  Colors,
-  SemanticColors,
-  Theme,
-  Typography
-} from './types';
+export type { Colors, Theme, Typography } from './types';

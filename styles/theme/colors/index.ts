@@ -3,7 +3,9 @@ import { Black, Blue, Green, Orange, Red, Yellow } from './base';
 const Main = {
   Primary: Blue[50],
   Secondary: Green[50],
-  Warning: Red[50]
+  Warning: Red[50],
+  White: Black[10],
+  Black: Black[700]
 } as const;
 
 const Sub = {
@@ -21,12 +23,3 @@ export const colors = {
 };
 
 export type Colors = typeof colors;
-
-export {
-  colorModes,
-  defaultColorMode,
-  getSemanticColors,
-  semanticColors
-} from './mode';
-
-export type { ColorMode, SemanticColors } from './mode';
