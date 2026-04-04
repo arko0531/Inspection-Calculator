@@ -1,17 +1,20 @@
-import { colors } from '@styles/theme/colors';
 import { Tabs } from 'expo-router';
-import { Icon } from 'react-native-paper';
+import { Icon, useTheme } from 'react-native-paper';
 
 const TabNavigation = () => {
+  const theme = useTheme();
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: colors.Sub.Black[10],
+          backgroundColor: theme.colors.surfaceVariant,
           height: 80,
           paddingTop: 6
-        }
+        },
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.onSurfaceVariant
       }}
     >
       <Tabs.Screen
