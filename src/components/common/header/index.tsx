@@ -1,7 +1,6 @@
-import { colors } from '@styles/theme/colors';
+import theme from '@styles';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
+import { StyleSheet, Text, View } from 'react-native';
 
 interface IHeaderProps {
   title: string;
@@ -10,19 +9,20 @@ interface IHeaderProps {
 }
 
 const Header = ({ title, description, topComp }: IHeaderProps) => {
-  const theme = useTheme();
-
   return (
     <>
       <View style={styles.headerTop}>{topComp ?? null}</View>
       <View style={styles.header}>
         <Text
-          style={[theme.fonts.headlineLarge, { color: theme.colors.onSurface }]}
+          style={[theme.typo.H1_30_Bold, { color: theme.colors.Main.Black }]}
         >
           {title}
         </Text>
         <Text
-          style={[theme.fonts.bodyMedium, { color: colors.Sub.Black[200] }]}
+          style={[
+            theme.typo.Body1_13_Regular,
+            { color: theme.colors.Sub.Black[200] }
+          ]}
         >
           {description}
         </Text>
@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    flex: 1,
     gap: 10
   }
 });

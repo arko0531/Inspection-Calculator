@@ -1,15 +1,14 @@
-import { appPaperTheme } from '@styles/theme/paperTheme';
+import theme from '@styles';
 import * as NavigationBar from 'expo-navigation-bar';
 import { Stack } from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
 import { useEffect } from 'react';
 import { Platform, StatusBar } from 'react-native';
-import { PaperProvider } from 'react-native-paper';
 import 'react-native-reanimated';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 export default function RootLayout() {
-  const backgroundColor = appPaperTheme.colors.background;
+  const backgroundColor = theme.colors.Main.White;
 
   useEffect(() => {
     void SystemUI.setBackgroundColorAsync(backgroundColor);
@@ -30,25 +29,23 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <PaperProvider theme={appPaperTheme}>
-        <StatusBar
-          backgroundColor={backgroundColor}
-          barStyle="dark-content"
-          translucent={false}
-        />
+      <StatusBar
+        backgroundColor={backgroundColor}
+        barStyle="dark-content"
+        translucent={false}
+      />
 
-        <SafeAreaView
-          style={{
-            flex: 1,
-            backgroundColor: backgroundColor
-          }}
-          edges={['top', 'left', 'right']}
-        >
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          </Stack>
-        </SafeAreaView>
-      </PaperProvider>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: backgroundColor
+        }}
+        edges={['top', 'left', 'right']}
+      >
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
+      </SafeAreaView>
     </SafeAreaProvider>
   );
 }
