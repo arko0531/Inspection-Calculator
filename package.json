@@ -10,6 +10,7 @@
     "ios": "expo start --ios --port 3000",
     "web": "expo start --web --port 3000",
     "lint": "expo lint",
+    "format": "prettier --write .",
     "prepare": "husky",
     "checkTs": "tsc --noEmit"
   },

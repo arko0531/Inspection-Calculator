@@ -1,10 +1,10 @@
 import SafeView from '@/components/common/layout/SafeView';
-import { Text } from 'react-native';
+import Home from '@/components/home';
 
 const HomeTab = () => {
   return (
     <SafeView>
-      <Text>홈</Text>
+      <Home />
     </SafeView>
   );
 };

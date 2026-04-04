@@ -1,14 +1,19 @@
 import { appPaperTheme } from '@styles/theme/paperTheme';
 import * as NavigationBar from 'expo-navigation-bar';
 import { Stack } from 'expo-router';
+import * as SystemUI from 'expo-system-ui';
 import { useEffect } from 'react';
-import { Platform } from 'react-native';
-import { PaperProvider, useTheme } from 'react-native-paper';
+import { Platform, StatusBar } from 'react-native';
+import { PaperProvider } from 'react-native-paper';
 import 'react-native-reanimated';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 export default function RootLayout() {
-  const theme = useTheme();
+  const backgroundColor = appPaperTheme.colors.background;
+
+  useEffect(() => {
+    void SystemUI.setBackgroundColorAsync(backgroundColor);
+  }, [backgroundColor]);
 
   useEffect(() => {
     if (Platform.OS !== 'android') return;
@@ -26,10 +31,16 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <PaperProvider theme={appPaperTheme}>
+        <StatusBar
+          backgroundColor={backgroundColor}
+          barStyle="dark-content"
+          translucent={false}
+        />
+
         <SafeAreaView
           style={{
             flex: 1,
-            backgroundColor: theme.colors.background
+            backgroundColor: backgroundColor
           }}
           edges={['top', 'left', 'right']}
         >

@@ -13,7 +13,7 @@ const SafeView = ({ children }: ISafeViewProps) => {
     <SafeAreaView
       style={{
         flex: 1,
-        paddingHorizontal: 26,
+        paddingHorizontal: 28,
         paddingVertical: 14,
         backgroundColor: theme.colors.background
       }}
