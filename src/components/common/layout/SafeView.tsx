@@ -12,7 +12,6 @@ const SafeView = ({ children }: ISafeViewProps) => {
       style={{
         flex: 1,
         paddingHorizontal: 28,
-        paddingVertical: 14,
         backgroundColor: theme.colors.Main.White
       }}
       edges={['bottom']}

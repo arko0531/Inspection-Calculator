@@ -10,22 +10,22 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 export default function RootLayout() {
   const backgroundColor = theme.colors.Main.White;
 
-  useEffect(() => {
-    void SystemUI.setBackgroundColorAsync(backgroundColor);
-  }, [backgroundColor]);
+  // useEffect(() => {
+  //   void SystemUI.setBackgroundColorAsync(backgroundColor);
+  // }, [backgroundColor]);
 
-  useEffect(() => {
-    if (Platform.OS !== 'android') return;
+  // useEffect(() => {
+  //   if (Platform.OS !== 'android') return;
 
-    void (async () => {
-      await NavigationBar.setVisibilityAsync('hidden');
-      await NavigationBar.setBehaviorAsync('inset-swipe');
-    })();
+  //   void (async () => {
+  //     await NavigationBar.setVisibilityAsync('hidden');
+  //     await NavigationBar.setBehaviorAsync('inset-swipe');
+  //   })();
 
-    return () => {
-      void NavigationBar.setVisibilityAsync('visible');
-    };
-  }, []);
+  //   return () => {
+  //     void NavigationBar.setVisibilityAsync('visible');
+  //   };
+  // }, []);
 
   return (
     <SafeAreaProvider>

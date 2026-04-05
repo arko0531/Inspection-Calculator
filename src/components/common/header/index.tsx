@@ -10,24 +10,13 @@ interface IHeaderProps {
 
 const Header = ({ title, description, topComp }: IHeaderProps) => {
   return (
-    <>
+    <View>
       <View style={styles.headerTop}>{topComp ?? null}</View>
       <View style={styles.header}>
-        <Text
-          style={[theme.typo.H1_30_Bold, { color: theme.colors.Main.Black }]}
-        >
-          {title}
-        </Text>
-        <Text
-          style={[
-            theme.typo.Body1_13_Regular,
-            { color: theme.colors.Sub.Black[200] }
-          ]}
-        >
-          {description}
-        </Text>
+        <Text style={styles.HeaderTitle}>{title}</Text>
+        <Text style={styles.HeaderDescription}>{description}</Text>
       </View>
-    </>
+    </View>
   );
 };
 
@@ -35,10 +24,23 @@ export default Header;
 
 const styles = StyleSheet.create({
   headerTop: {
-    height: 40
+    height: 56
   },
 
   header: {
-    gap: 10
+    gap: 6
+  },
+
+  HeaderTitle: {
+    color: theme.colors.Main.Black,
+
+    ...theme.typo.H1_30_Bold
+  },
+
+  HeaderDescription: {
+    paddingLeft: 2,
+    color: theme.colors.Sub.Black[200],
+
+    ...theme.typo.Body2_12_Regular
   }
 });

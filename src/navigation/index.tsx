@@ -10,7 +10,6 @@ const TabNavigation = () => {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: theme.colors.Sub.Black[10],
-          height: 80,
           paddingTop: 6
         },
         tabBarActiveTintColor: theme.colors.Main.Primary,
