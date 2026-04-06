@@ -1,4 +1,4 @@
-import theme from '@styles';
+import theme from '@/styles';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 

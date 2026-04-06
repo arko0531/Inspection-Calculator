@@ -1,4 +1,4 @@
-import theme from '@styles';
+import theme from '@/styles';
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 

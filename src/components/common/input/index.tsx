@@ -1,4 +1,4 @@
-import theme from '@styles';
+import theme from '@/styles';
 import { KeyboardTypeOptions, StyleSheet, TextInput, View } from 'react-native';
 
 interface IInputProps {

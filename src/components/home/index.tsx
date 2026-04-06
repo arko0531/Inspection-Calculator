@@ -9,7 +9,6 @@ const Home = () => {
         title="검사 계산기"
         description="입력값을 넣고 계산 버튼을 눌러주세요."
       />
-
       <HomeCalcForm />
     </View>
   );
@@ -19,7 +18,6 @@ export default Home;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     gap: 26
   }
 });

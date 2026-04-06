@@ -1,4 +1,4 @@
-import theme from '@styles';
+import theme from '@/styles';
 import * as NavigationBar from 'expo-navigation-bar';
 import { Stack } from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
