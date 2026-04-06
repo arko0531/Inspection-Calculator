@@ -1,20 +1,19 @@
+import theme from '@/styles';
 import { Tabs } from 'expo-router';
-import { Icon, useTheme } from 'react-native-paper';
+import Entypo from '@expo/vector-icons/Entypo';
+import Feather from '@expo/vector-icons/Feather';
 
 const TabNavigation = () => {
-  const theme = useTheme();
-
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: theme.colors.surfaceVariant,
-          height: 80,
+          backgroundColor: theme.colors.Sub.Black[10],
           paddingTop: 6
         },
-        tabBarActiveTintColor: theme.colors.primary,
-        tabBarInactiveTintColor: theme.colors.onSurfaceVariant
+        tabBarActiveTintColor: theme.colors.Main.Primary,
+        tabBarInactiveTintColor: theme.colors.Sub.Black[100]
       }}
     >
       <Tabs.Screen
@@ -22,7 +21,7 @@ const TabNavigation = () => {
         options={{
           title: 'Home',
           tabBarIcon: ({ color, size }) => (
-            <Icon source="home" color={color} size={size} />
+            <Entypo name="home" size={size} color={color} />
           ),
           tabBarLabel: 'Home'
         }}
@@ -32,7 +31,7 @@ const TabNavigation = () => {
         options={{
           title: '기록',
           tabBarIcon: ({ color, size }) => (
-            <Icon source="file-document-outline" color={color} size={size} />
+            <Feather name="file-text" size={size} color={color} />
           ),
           tabBarLabel: '기록'
         }}

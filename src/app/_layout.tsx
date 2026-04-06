@@ -1,43 +1,51 @@
-import { appPaperTheme } from '@styles/theme/paperTheme';
+import theme from '@/styles';
 import * as NavigationBar from 'expo-navigation-bar';
 import { Stack } from 'expo-router';
+import * as SystemUI from 'expo-system-ui';
 import { useEffect } from 'react';
-import { Platform } from 'react-native';
-import { PaperProvider, useTheme } from 'react-native-paper';
+import { Platform, StatusBar } from 'react-native';
 import 'react-native-reanimated';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 export default function RootLayout() {
-  const theme = useTheme();
+  const backgroundColor = theme.colors.Main.White;
 
-  useEffect(() => {
-    if (Platform.OS !== 'android') return;
+  // useEffect(() => {
+  //   void SystemUI.setBackgroundColorAsync(backgroundColor);
+  // }, [backgroundColor]);
 
-    void (async () => {
-      await NavigationBar.setVisibilityAsync('hidden');
-      await NavigationBar.setBehaviorAsync('inset-swipe');
-    })();
+  // useEffect(() => {
+  //   if (Platform.OS !== 'android') return;
 
-    return () => {
-      void NavigationBar.setVisibilityAsync('visible');
-    };
-  }, []);
+  //   void (async () => {
+  //     await NavigationBar.setVisibilityAsync('hidden');
+  //     await NavigationBar.setBehaviorAsync('inset-swipe');
+  //   })();
+
+  //   return () => {
+  //     void NavigationBar.setVisibilityAsync('visible');
+  //   };
+  // }, []);
 
   return (
     <SafeAreaProvider>
-      <PaperProvider theme={appPaperTheme}>
-        <SafeAreaView
-          style={{
-            flex: 1,
-            backgroundColor: theme.colors.background
-          }}
-          edges={['top', 'left', 'right']}
-        >
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          </Stack>
-        </SafeAreaView>
-      </PaperProvider>
+      <StatusBar
+        backgroundColor={backgroundColor}
+        barStyle="dark-content"
+        translucent={false}
+      />
+
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: backgroundColor
+        }}
+        edges={['top', 'left', 'right']}
+      >
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
+      </SafeAreaView>
     </SafeAreaProvider>
   );
 }

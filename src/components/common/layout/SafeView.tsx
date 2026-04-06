@@ -1,5 +1,5 @@
+import theme from '@/styles';
 import React from 'react';
-import { useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface ISafeViewProps {
@@ -7,15 +7,12 @@ interface ISafeViewProps {
 }
 
 const SafeView = ({ children }: ISafeViewProps) => {
-  const theme = useTheme();
-
   return (
     <SafeAreaView
       style={{
         flex: 1,
-        paddingHorizontal: 26,
-        paddingVertical: 14,
-        backgroundColor: theme.colors.background
+        paddingHorizontal: 28,
+        backgroundColor: theme.colors.Main.White
       }}
       edges={['bottom']}
     >

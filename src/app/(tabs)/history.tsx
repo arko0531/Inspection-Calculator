@@ -1,10 +1,10 @@
 import SafeView from '@/components/common/layout/SafeView';
-import { Text } from 'react-native';
+import History from '@/components/history';
 
 const HistoryTab = () => {
   return (
     <SafeView>
-      <Text>계산 기록</Text>
+      <History />
     </SafeView>
   );
 };

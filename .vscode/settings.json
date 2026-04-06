@@ -20,8 +20,8 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit",
-    "source.organizeImports": "explicit",
-    "source.sortMembers": "explicit"
-  }
+    "source.fixAll": "explicit"
+  },
+  "prettier.prettierPath": "node_modules/prettier",
+  "files.eol": "\n"
 }
