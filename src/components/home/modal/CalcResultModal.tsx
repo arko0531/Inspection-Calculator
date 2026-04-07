@@ -6,12 +6,14 @@ import { getHexOpacity } from '@/utils/getHexOpacity';
 import CalcResultItem from '@/components/home/modal/CalcResultItem';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Octicons from '@expo/vector-icons/Octicons';
+import { TResult } from '@/types/common';
 
 interface ICalcResultModalProps {
   open: boolean;
   onClose: () => void;
+  result: TResult;
 }
-const CalcResultModal = ({ open, onClose }: ICalcResultModalProps) => {
+const CalcResultModal = ({ open, onClose, result }: ICalcResultModalProps) => {
   return (
     <Modal
       open={open}
@@ -44,7 +46,7 @@ const CalcResultModal = ({ open, onClose }: ICalcResultModalProps) => {
             />
           }
           title="인당 검사 개수"
-          value="100개"
+          value={result.perPerson}
         />
         <CalcResultItem
           icon={
@@ -55,14 +57,14 @@ const CalcResultModal = ({ open, onClose }: ICalcResultModalProps) => {
             />
           }
           title="소요 시간"
-          value="2시간 30분"
+          value={result.duration}
         />
         <CalcResultItem
           icon={
             <Ionicons name="flag" size={14} color={theme.colors.Main.Primary} />
           }
           title="종료 시간"
-          value="14:30"
+          value={result.endTime}
         />
       </View>
     </Modal>
