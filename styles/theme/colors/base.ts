@@ -1,5 +1,5 @@
 export const Blue = {
-  0: '#E8F4FF',
+  0: '#F4FAFF',
   10: '#D0E9FF',
   20: '#A8D4FF',
   30: '#7AB8FF',

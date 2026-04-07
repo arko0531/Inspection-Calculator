@@ -29,7 +29,8 @@ const HomeCalcForm = () => {
   });
 
   const onSubmit = (data: IHomeCalcFormProps) => {
-    console.log(data);
+    const { name, count, unit, perHour, startTime } = data;
+
     setIsOpenResultModal(true);
   };
 

@@ -1,6 +1,8 @@
 import theme from '@/styles';
 import { getHexOpacity } from '@/utils/getHexOpacity';
-import { useEffect, useRef, useState } from 'react';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { Text } from '@react-navigation/elements';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated,
   Dimensions,
@@ -26,6 +28,12 @@ interface IModalProps {
   /** `slide`: 배경 즉시 + 패널만 아래에서 올림. `none`: 전부 즉시. */
   animationType?: 'slide' | 'none';
   modalStyle?: 'fullScreen' | 'pageSheet' | 'formSheet' | 'overFullScreen';
+  /** `bottom`: 패널을 화면 하단에 붙임(콘텐츠 높이만큼). 기본은 가운데. */
+  sheetPlacement?: 'center' | 'bottom';
+  closeButton?: boolean;
+  closeButtonStyle?: StyleProp<ViewStyle>;
+  closeIconColor?: string;
+  title?: string | React.ReactNode;
 }
 
 const Modal = ({
@@ -36,8 +44,15 @@ const Modal = ({
   height,
   animationType = 'slide',
   modalStyle,
-  style
+  style,
+  sheetPlacement = 'center',
+  closeButton = false,
+  title,
+  closeButtonStyle,
+  closeIconColor
 }: IModalProps) => {
+  const usePanelSlide = animationType === 'slide';
+
   const [internalVisible, setInternalVisible] = useState(
     () => !usePanelSlide && open
   );
@@ -46,13 +61,11 @@ const Modal = ({
 
   const insets = useSafeAreaInsets();
 
-  const usePanelSlide = animationType === 'slide';
-
   const presentationStyle =
     modalStyle ?? (Platform.OS === 'ios' ? 'overFullScreen' : undefined);
 
   const panelSize = {
-    width: width ?? '90%',
+    width: width ?? '95%',
     height: height ?? 'auto'
   } as const;
 
@@ -86,6 +99,38 @@ const Modal = ({
 
   const modalVisible = usePanelSlide ? internalVisible : open;
 
+  const Contents = useMemo(() => {
+    return (
+      <>
+        {title && (
+          <View style={styles.header}>
+            <Text style={styles.title}>{title}</Text>
+          </View>
+        )}
+        {children}
+      </>
+    );
+  }, [title, children]);
+
+  const CloseButton = useMemo(() => {
+    return (
+      <View>
+        {closeButton && (
+          <Pressable
+            onPress={onClose}
+            style={[styles.closeButton, closeButtonStyle]}
+          >
+            <Ionicons
+              name="close"
+              size={22}
+              color={closeIconColor ?? theme.colors.Main.Black}
+            />
+          </Pressable>
+        )}
+      </View>
+    );
+  }, [closeButton, onClose, closeButtonStyle, closeIconColor]);
+
   return (
     <RNModal
       visible={modalVisible}
@@ -97,30 +142,40 @@ const Modal = ({
       <View style={styles.root}>
         <Pressable
           style={StyleSheet.absoluteFill}
-          onPress={onClose}
+          onPress={closeButton ? undefined : onClose}
           accessibilityLabel="모달 닫기"
           accessibilityRole="button"
         />
         <View
           style={[
             styles.modalContainer,
+            sheetPlacement === 'bottom' && styles.modalContainerBottom,
             { paddingBottom: Math.max(insets.bottom, 16) }
           ]}
           pointerEvents="box-none"
         >
           {usePanelSlide ? (
-            <Animated.View
-              style={[
-                styles.modal,
-                panelSize,
-                style,
-                { transform: [{ translateY: slideAnim }] }
-              ]}
-            >
-              {children}
-            </Animated.View>
+            <>
+              <Animated.View
+                style={[
+                  styles.modal,
+                  panelSize,
+                  style,
+                  { transform: [{ translateY: slideAnim }] }
+                ]}
+              >
+                {Contents}
+              </Animated.View>
+
+              <Animated.View style={{ transform: [{ translateY: slideAnim }] }}>
+                {CloseButton}
+              </Animated.View>
+            </>
           ) : (
-            <View style={[styles.modal, panelSize, style]}>{children}</View>
+            <>
+              <View style={[styles.modal, panelSize, style]}>{Contents}</View>
+              {CloseButton}
+            </>
           )}
         </View>
       </View>
@@ -141,12 +196,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20
   },
 
+  modalContainerBottom: {
+    justifyContent: 'flex-end'
+  },
+
   modal: {
     backgroundColor: theme.colors.Main.White,
     borderRadius: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     overflow: 'hidden'
+  },
+
+  header: {
+    marginBottom: 20,
+    paddingLeft: 4
+  },
+
+  title: {
+    color: theme.colors.Main.Black,
+
+    ...theme.typo.B1_15_Bold
+  },
+
+  closeButton: {
+    top: 12,
+    padding: 10,
+    borderRadius: '50%',
+    backgroundColor: theme.colors.Main.White,
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 });
 

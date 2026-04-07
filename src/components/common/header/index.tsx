@@ -24,7 +24,7 @@ export default Header;
 
 const styles = StyleSheet.create({
   headerTop: {
-    height: 56
+    height: 40
   },
 
   header: {
