@@ -3,10 +3,10 @@ import theme from '@/styles';
 import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { getHexOpacity } from '@/utils/getHexOpacity';
-import CalcResultItem from '@/components/home/modal/CalcResultItem';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Octicons from '@expo/vector-icons/Octicons';
 import { TResult } from '@/types/common';
+import CalcResultItem from '@/components/home/CalcResultItem';
 
 interface ICalcResultModalProps {
   open: boolean;
@@ -100,10 +100,10 @@ const styles = StyleSheet.create({
   },
 
   headerIcon: {
-    width: 36,
-    height: 36,
+    width: 38,
+    height: 38,
     borderRadius: '50%',
-    backgroundColor: getHexOpacity(theme.colors.Sub.Blue[20], 0.6),
+    backgroundColor: getHexOpacity(theme.colors.Sub.Blue[20], 0.4),
     padding: 4,
     alignItems: 'center',
     justifyContent: 'center'

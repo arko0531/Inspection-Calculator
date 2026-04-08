@@ -14,7 +14,7 @@ const SafeView = ({ children }: ISafeViewProps) => {
         paddingHorizontal: 28,
         backgroundColor: theme.colors.Main.White
       }}
-      edges={['bottom']}
+      edges={[]}
     >
       {children}
     </SafeAreaView>
