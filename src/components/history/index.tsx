@@ -5,35 +5,36 @@ import { STORAGE_KEYS } from '@/constants/keys';
 import { getData, setData } from '@/utils/storage/asyncStorage';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { THistoryItem } from '@/types/common';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Spinner from '@/components/common/spinner';
+import { useFocusEffect } from '@react-navigation/native';
 
 const History = () => {
   const [historyData, setHistoryData] = useState<THistoryItem[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
+  useFocusEffect(
+    useCallback(() => {
+      let mounted = true;
 
-      try {
-        const data = await getData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY);
-
-        if (data) {
-          setHistoryData(data);
-        } else {
-          setHistoryData([]);
+      const fetchData = async () => {
+        setLoading(true);
+        try {
+          const data = await getData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY);
+          if (mounted) setHistoryData(data ?? []);
+        } finally {
+          if (mounted) setLoading(false);
         }
-      } catch (error) {
-        console.error('기록 불러오기 실패', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      };
 
-    fetchData();
-  }, []);
+      fetchData();
+
+      return () => {
+        mounted = false;
+      };
+    }, [])
+  );
 
   const deleteHandler = async () => {
     setLoading(true);
