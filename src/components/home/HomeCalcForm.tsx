@@ -94,12 +94,13 @@ const HomeCalcForm = ({
       updateTs: dayjs().format('YYYY-MM-DD HH:mm:ss')
     };
 
-    // const prev =
-    //   (await getData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY)) ?? [];
-    // await setData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY, [
-    //   ...prev,
-    //   historyData
-    // ]);
+    const prevData =
+      (await getData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY)) ?? [];
+
+    // 최대 50개까지 저장
+    const totalData = [historyData, ...prevData].slice(0, 50);
+
+    await setData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY, totalData);
 
     setResult({
       perPerson: perPersonLabel,

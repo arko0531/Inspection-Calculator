@@ -4,8 +4,13 @@ import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { getHexOpacity } from '@/utils/getHexOpacity';
 import HistoryCardItemPair from '@/components/history/item/HistoryCardItemPair';
 import { ACCENT_COLORS } from '@/constants/accentColors';
+import { THistoryItem } from '@/types/common';
 
-const HistoryCard = () => {
+interface IHistoryCardProps {
+  item: THistoryItem;
+}
+
+const HistoryCard = ({ item }: IHistoryCardProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
@@ -18,25 +23,25 @@ const HistoryCard = () => {
 
       <View style={styles.contentContainer}>
         <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-          제품명
+          {item.name}
         </Text>
 
         <View style={styles.itemContainer}>
           <HistoryCardItemPair
-            first={{ name: '수량', value: '1,400' }}
-            second={{ name: '인원', value: '10' }}
+            first={{ name: '수량', value: item.count }}
+            second={{ name: '인원', value: item.unit }}
           />
           <HistoryCardItemPair
-            first={{ name: '시간당 검사수량', value: '200' }}
-            second={{ name: '소요 시간', value: '1시간' }}
+            first={{ name: '시간당 검사수량', value: item.perHour }}
+            second={{ name: '소요 시간', value: item.duration }}
           />
           <HistoryCardItemPair
-            first={{ name: '시작 시간', value: '10:00' }}
-            second={{ name: '종료 시간', value: '11:00' }}
+            first={{ name: '시작 시간', value: item.startTime }}
+            second={{ name: '종료 시간', value: item.endTime }}
           />
         </View>
 
-        <Text style={styles.time}>2026-04-08 10:00:00</Text>
+        <Text style={styles.time}>{item.updateTs}</Text>
       </View>
     </View>
   );
@@ -80,7 +85,7 @@ const styles = StyleSheet.create({
   },
 
   itemContainer: {
-    gap: 4
+    gap: 6
   },
 
   time: {

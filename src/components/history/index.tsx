@@ -1,17 +1,44 @@
 import Header from '@/components/common/header';
-import ScrollView from '@/components/common/layout/ScrollView';
 import HistoryCard from '@/components/history/item';
 import theme from '@/styles';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { STORAGE_KEYS } from '@/constants/keys';
+import { getData, setData } from '@/utils/storage/asyncStorage';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { THistoryItem } from '@/types/common';
+import { useEffect, useMemo, useState } from 'react';
 
 const History = () => {
-  const deleteHandler = () => {};
+  const [historyData, setHistoryData] = useState<THistoryItem[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+
+      const data = await getData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY);
+
+      if (data) {
+        setHistoryData(data);
+      } else {
+        setHistoryData([]);
+      }
+
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+  const deleteHandler = () => {
+    setHistoryData([]);
+    setData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY, []);
+  };
 
   return (
     <View style={styles.container}>
       <Header
         title="계산 기록"
-        description="최근 계산 기록이에요."
+        description="최근 계산 기록 최대 50개를 볼 수 있어요."
         topComp={
           <Pressable onPress={deleteHandler}>
             <Text style={styles.deleteButton}>전체 삭제</Text>
@@ -19,11 +46,11 @@ const History = () => {
         }
       />
 
-      <ScrollView style={styles.scrollContainer}>
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-      </ScrollView>
+      <FlatList
+        data={historyData}
+        renderItem={({ item }) => <HistoryCard item={item} />}
+        keyExtractor={(item, index) => item.updateTs + index}
+      />
     </View>
   );
 };
