@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { ICalcFormProps } from '@/types/home';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import Input from '@/components/common/input';
 import FormLayout from '@/components/common/layout/FormLayout';
 import DatePicker from '@/components/common/datePicker';
@@ -11,6 +11,7 @@ import { THistoryItem, TResult } from '@/types/common';
 import useDidMountEffect from '@/hooks/useDidMountEffect';
 import { STORAGE_KEYS } from '@/constants/keys';
 import { getData, setData } from '@/utils/storage/asyncStorage';
+import Spinner from '@/components/common/spinner';
 
 interface IHomeCalcFormProps {
   setResult: React.Dispatch<React.SetStateAction<TResult>>;
@@ -23,6 +24,8 @@ const HomeCalcForm = ({
   setIsShowResult,
   resetForm
 }: IHomeCalcFormProps) => {
+  const [loading, setLoading] = useState(false);
+
   const defaultValues = useMemo(
     (): ICalcFormProps => ({
       name: '',
@@ -44,6 +47,8 @@ const HomeCalcForm = ({
   }, [defaultValues, reset, resetForm]);
 
   const onSubmit = async (data: ICalcFormProps) => {
+    setLoading(true);
+
     const { name, count, unit, perHour, startTime } = data;
 
     const countN = Number(count);
@@ -94,21 +99,27 @@ const HomeCalcForm = ({
       updateTs: dayjs().format('YYYY-MM-DD HH:mm:ss')
     };
 
-    const prevData =
-      (await getData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY)) ?? [];
+    try {
+      const prevData =
+        (await getData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY)) ?? [];
 
-    // 최대 50개까지 저장
-    const totalData = [historyData, ...prevData].slice(0, 50);
+      // 최대 50개까지 저장
+      const totalData = [historyData, ...prevData].slice(0, 50);
 
-    await setData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY, totalData);
+      await setData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY, totalData);
 
-    setResult({
-      perPerson: perPersonLabel,
-      duration: durationLabel,
-      endTime: endTimeLabel
-    });
+      setResult({
+        perPerson: perPersonLabel,
+        duration: durationLabel,
+        endTime: endTimeLabel
+      });
 
-    setIsShowResult(true);
+      setIsShowResult(true);
+    } catch (error) {
+      console.error('기록 저장 실패', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -216,6 +227,8 @@ const HomeCalcForm = ({
           <Button title="계산하기" onPress={handleSubmit(onSubmit)} />
         </View>
       </View>
+
+      <Spinner loading={loading} />
     </>
   );
 };

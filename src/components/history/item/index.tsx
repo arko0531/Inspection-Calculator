@@ -1,6 +1,6 @@
 import theme from '@/styles';
 import { StyleSheet, Text, View } from 'react-native';
-import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { getHexOpacity } from '@/utils/getHexOpacity';
 import HistoryCardItemPair from '@/components/history/item/HistoryCardItemPair';
 import { ACCENT_COLORS } from '@/constants/accentColors';
@@ -8,17 +8,17 @@ import { THistoryItem } from '@/types/common';
 
 interface IHistoryCardProps {
   item: THistoryItem;
+  colorIndex: number;
 }
 
-const HistoryCard = ({ item }: IHistoryCardProps) => {
+const HistoryCard = ({ item, colorIndex }: IHistoryCardProps) => {
+  const color = ACCENT_COLORS[colorIndex % ACCENT_COLORS.length];
+  const iconBg = getHexOpacity(color, 0.1);
+
   return (
     <View style={styles.container}>
-      <View style={styles.iconContainer}>
-        <SimpleLineIcons
-          name="social-dropbox"
-          size={22}
-          color={theme.colors.Main.Primary}
-        />
+      <View style={[styles.iconContainer, { backgroundColor: iconBg }]}>
+        <FontAwesome5 name="box" size={18} color={color} />
       </View>
 
       <View style={styles.contentContainer}>
@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 10,
-    backgroundColor: getHexOpacity(theme.colors.Main.Primary, 0.1),
     padding: 4,
     alignItems: 'center',
     justifyContent: 'center'

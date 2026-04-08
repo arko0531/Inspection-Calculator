@@ -5,7 +5,9 @@ import { STORAGE_KEYS } from '@/constants/keys';
 import { getData, setData } from '@/utils/storage/asyncStorage';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { THistoryItem } from '@/types/common';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import Spinner from '@/components/common/spinner';
 
 const History = () => {
   const [historyData, setHistoryData] = useState<THistoryItem[]>([]);
@@ -15,23 +17,35 @@ const History = () => {
     const fetchData = async () => {
       setLoading(true);
 
-      const data = await getData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY);
+      try {
+        const data = await getData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY);
 
-      if (data) {
-        setHistoryData(data);
-      } else {
-        setHistoryData([]);
+        if (data) {
+          setHistoryData(data);
+        } else {
+          setHistoryData([]);
+        }
+      } catch (error) {
+        console.error('기록 불러오기 실패', error);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
     fetchData();
   }, []);
 
-  const deleteHandler = () => {
-    setHistoryData([]);
-    setData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY, []);
+  const deleteHandler = async () => {
+    setLoading(true);
+
+    try {
+      await setData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY, []);
+      setHistoryData([]);
+    } catch (error) {
+      console.error('기록 삭제 실패', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -46,11 +60,32 @@ const History = () => {
         }
       />
 
-      <FlatList
-        data={historyData}
-        renderItem={({ item }) => <HistoryCard item={item} />}
-        keyExtractor={(item, index) => item.updateTs + index}
-      />
+      {/* {renderContent()} */}
+
+      {historyData?.length > 0 ? (
+        <FlatList
+          contentContainerStyle={styles.scrollContainer}
+          data={historyData}
+          renderItem={({ item, index }) => (
+            <HistoryCard
+              item={item}
+              colorIndex={historyData.length - 1 - index}
+            />
+          )}
+          keyExtractor={(item, index) => item.updateTs + index}
+        />
+      ) : (
+        <View style={styles.centerContainer}>
+          <FontAwesome5
+            name="box-open"
+            size={50}
+            color={theme.colors.Sub.Black[20]}
+          />
+          <Text style={styles.emptyText}>저장된 기록이 없어요.</Text>
+        </View>
+      )}
+
+      <Spinner loading={loading} />
     </View>
   );
 };
@@ -72,5 +107,19 @@ const styles = StyleSheet.create({
     textAlign: 'right',
 
     ...theme.typo.Body2_12_Bold
+  },
+
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 18
+  },
+
+  emptyText: {
+    color: theme.colors.Sub.Black[30],
+    textAlign: 'center',
+
+    ...theme.typo.B1_15_Bold
   }
 });
