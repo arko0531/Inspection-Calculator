@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderWidth: 1,
     borderColor: theme.colors.Sub.Black[30],
-    borderRadius: 8,
+    borderRadius: 10,
     backgroundColor: theme.colors.Main.White
   },
 

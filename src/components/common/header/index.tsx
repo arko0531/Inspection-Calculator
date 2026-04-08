@@ -40,8 +40,8 @@ const styles = StyleSheet.create({
 
   HeaderDescription: {
     paddingLeft: 2,
-    color: theme.colors.Sub.Black[200],
+    color: theme.colors.Sub.Black[300],
 
-    ...theme.typo.Body2_12_Regular
+    ...theme.typo.Body1_13_Regular
   }
 });

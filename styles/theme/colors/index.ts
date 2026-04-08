@@ -1,4 +1,4 @@
-import { Black, Blue, Green, Orange, Red, Yellow } from './base';
+import { Black, Blue, Green, Orange, Purple, Red, Yellow } from './base';
 
 const Main = {
   Primary: Blue[50],
@@ -14,7 +14,8 @@ const Sub = {
   Yellow,
   Green,
   Blue,
-  Black
+  Black,
+  Purple
 };
 
 export const colors = {
