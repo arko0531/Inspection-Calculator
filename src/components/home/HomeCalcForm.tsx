@@ -7,8 +7,10 @@ import FormLayout from '@/components/common/layout/FormLayout';
 import DatePicker from '@/components/common/datePicker';
 import Button from '@/components/common/button';
 import dayjs from 'dayjs';
-import { TResult } from '@/types/common';
+import { THistoryItem, TResult } from '@/types/common';
 import useDidMountEffect from '@/hooks/useDidMountEffect';
+import { STORAGE_KEYS } from '@/constants/keys';
+import { getData, setData } from '@/utils/storage/asyncStorage';
 
 interface IHomeCalcFormProps {
   setResult: React.Dispatch<React.SetStateAction<TResult>>;
@@ -24,9 +26,9 @@ const HomeCalcForm = ({
   const defaultValues = useMemo(
     (): ICalcFormProps => ({
       name: '',
-      count: 0,
+      count: '',
       unit: '',
-      perHour: 0,
+      perHour: '',
       startTime: ''
     }),
     []
@@ -41,7 +43,7 @@ const HomeCalcForm = ({
     reset(defaultValues);
   }, [defaultValues, reset, resetForm]);
 
-  const onSubmit = (data: ICalcFormProps) => {
+  const onSubmit = async (data: ICalcFormProps) => {
     const { name, count, unit, perHour, startTime } = data;
 
     const countN = Number(count);
@@ -55,19 +57,49 @@ const HomeCalcForm = ({
       maximumFractionDigits: 1
     })}개`;
 
-    // 소요 시간(시간): 팀 처리량(인원 × 시간당) 기준으로 전체 수량을 나눔
+    // 소요 시간(초): 팀 처리량(인원 × 시간당) 기준으로 전체 수량을 나눔
     const hoursTotal = countN / (unitN * perHourN);
-    const totalMinutes = Math.round(hoursTotal * 60);
-    const h = Math.floor(totalMinutes / 60);
-    const m = totalMinutes % 60;
+    const totalSeconds = Math.round(hoursTotal * 3600);
+
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+
     const durationLabel =
-      h === 0 ? `${m}분` : m === 0 ? `${h}시간` : `${h}시간 ${m}분`;
+      h > 0
+        ? s === 0
+          ? `${h}시간 ${m}분`
+          : `${h}시간 ${m}분 ${s}초`
+        : m > 0
+          ? s === 0
+            ? `${m}분`
+            : `${m}분 ${s}초`
+          : `${s}초`;
 
     // 종료 시간: 시작(HH:mm)에 소요 분을 더함
     const start = dayjs(startTime.trim(), 'HH:mm', true);
     const endTimeLabel = start.isValid()
-      ? start.add(totalMinutes, 'minute').format('HH:mm')
+      ? start.add(totalSeconds, 'second').format('HH:mm')
       : '';
+
+    const historyData: THistoryItem = {
+      name,
+      count: countN.toLocaleString('ko-KR'),
+      unit: unitN.toLocaleString('ko-KR'),
+      perHour: perHourN.toLocaleString('ko-KR'),
+      startTime,
+      endTime: endTimeLabel,
+      perPerson: perPersonLabel,
+      duration: durationLabel,
+      updateTs: dayjs().format('YYYY-MM-DD HH:mm:ss')
+    };
+
+    // const prev =
+    //   (await getData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY)) ?? [];
+    // await setData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY, [
+    //   ...prev,
+    //   historyData
+    // ]);
 
     setResult({
       perPerson: perPersonLabel,
@@ -85,7 +117,7 @@ const HomeCalcForm = ({
           {({ value, onChange }) => (
             <Input
               value={value}
-              onChangeText={onChange}
+              onChange={onChange}
               placeholder="제품명을 입력해주세요."
             />
           )}
@@ -108,9 +140,10 @@ const HomeCalcForm = ({
           {({ value, onChange }) => (
             <Input
               value={value}
-              onChangeText={onChange}
+              onChange={onChange}
               placeholder="수량을 입력해주세요."
               type="numeric"
+              number
             />
           )}
         </FormLayout>
@@ -132,9 +165,10 @@ const HomeCalcForm = ({
           {({ value, onChange }) => (
             <Input
               value={value}
-              onChangeText={onChange}
+              onChange={onChange}
               placeholder="인원 수를 입력해주세요."
               type="numeric"
+              number
             />
           )}
         </FormLayout>
@@ -156,9 +190,10 @@ const HomeCalcForm = ({
           {({ value, onChange }) => (
             <Input
               value={value}
-              onChangeText={onChange}
+              onChange={onChange}
               placeholder="시간당 검사수량을 입력해주세요."
               type="numeric"
+              number
             />
           )}
         </FormLayout>
