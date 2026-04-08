@@ -3,9 +3,10 @@ import ScrollView from '@/components/common/layout/ScrollView';
 import CalcResult from '@/components/home/CalcResult';
 import HomeCalcForm from '@/components/home/HomeCalcForm';
 import CalcResultModal from '@/components/home/modal/CalcResultModal';
+import theme from '@/styles';
 import { TResult } from '@/types/common';
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 const Home = () => {
   const [isShowResult, setIsShowResult] = useState(false);
@@ -14,6 +15,17 @@ const Home = () => {
     duration: '',
     endTime: ''
   });
+  const [resetForm, setResetForm] = useState(0);
+
+  const resetHandler = () => {
+    setResult({
+      perPerson: '',
+      duration: '',
+      endTime: ''
+    });
+    setIsShowResult(false);
+    setResetForm((prev) => prev + 1);
+  };
 
   return (
     <>
@@ -21,12 +33,18 @@ const Home = () => {
         <Header
           title="검사 계산기"
           description="입력값을 넣고 계산 버튼을 눌러주세요."
+          topComp={
+            <Pressable onPress={resetHandler}>
+              <Text style={styles.resetButton}>초기화</Text>
+            </Pressable>
+          }
         />
 
         <ScrollView style={styles.scrollContainer}>
           <HomeCalcForm
             setResult={setResult}
             setIsShowResult={setIsShowResult}
+            resetForm={resetForm}
           />
 
           {isShowResult && <CalcResult result={result} />}
@@ -55,5 +73,12 @@ const styles = StyleSheet.create({
   scrollContainer: {
     gap: 26,
     paddingBottom: 26
+  },
+
+  resetButton: {
+    color: theme.colors.Main.Warning,
+    textAlign: 'right',
+
+    ...theme.typo.Body2_12_Bold
   }
 });

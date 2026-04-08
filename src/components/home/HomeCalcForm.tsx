@@ -8,13 +8,19 @@ import DatePicker from '@/components/common/datePicker';
 import Button from '@/components/common/button';
 import dayjs from 'dayjs';
 import { TResult } from '@/types/common';
+import useDidMountEffect from '@/hooks/useDidMountEffect';
 
 interface IHomeCalcFormProps {
   setResult: React.Dispatch<React.SetStateAction<TResult>>;
   setIsShowResult: React.Dispatch<React.SetStateAction<boolean>>;
+  resetForm: number;
 }
 
-const HomeCalcForm = ({ setResult, setIsShowResult }: IHomeCalcFormProps) => {
+const HomeCalcForm = ({
+  setResult,
+  setIsShowResult,
+  resetForm
+}: IHomeCalcFormProps) => {
   const defaultValues = useMemo(
     (): ICalcFormProps => ({
       name: '',
@@ -26,10 +32,14 @@ const HomeCalcForm = ({ setResult, setIsShowResult }: IHomeCalcFormProps) => {
     []
   );
 
-  const { control, handleSubmit } = useForm<ICalcFormProps>({
+  const { control, handleSubmit, reset } = useForm<ICalcFormProps>({
     mode: 'onSubmit',
     defaultValues
   });
+
+  useDidMountEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset, resetForm]);
 
   const onSubmit = (data: ICalcFormProps) => {
     const { name, count, unit, perHour, startTime } = data;
