@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     height: 48,
     borderWidth: 1,
     borderColor: theme.colors.Sub.Black[30],
-    borderRadius: 8,
+    borderRadius: 10,
     paddingHorizontal: 16,
 
     ...theme.typo.Body1_13_Regular

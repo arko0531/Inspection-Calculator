@@ -12,7 +12,9 @@ const CalcResultItem = ({ icon, title, value }: ICalcResultItemProps) => {
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         <View style={styles.icon}>{icon}</View>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+          {title}
+        </Text>
       </View>
       <Text style={styles.value}>{value}</Text>
     </View>
@@ -29,6 +31,8 @@ const styles = StyleSheet.create({
   },
 
   titleContainer: {
+    flex: 1,
+    minWidth: 0,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8
@@ -41,6 +45,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
+    maxWidth: '85%',
     color: theme.colors.Sub.Black[400],
 
     ...theme.typo.Body1_13_Regular

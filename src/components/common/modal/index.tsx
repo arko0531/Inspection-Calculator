@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
 
   modal: {
     backgroundColor: theme.colors.Main.White,
-    borderRadius: 8,
+    borderRadius: 10,
     paddingHorizontal: 16,
     paddingVertical: 12,
     overflow: 'hidden'
