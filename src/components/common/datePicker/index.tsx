@@ -1,3 +1,4 @@
+import Modal from '@/components/common/modal';
 import theme from '@/styles';
 import DateTimePicker, {
   type DateTimePickerEvent,
@@ -6,9 +7,9 @@ import DateTimePicker, {
 import Feather from '@expo/vector-icons/Feather';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  Modal,
+  Dimensions,
   Platform,
   Pressable,
   StyleSheet,
@@ -17,6 +18,8 @@ import {
 } from 'react-native';
 
 dayjs.extend(customParseFormat);
+
+const IOS_SHEET_WIDTH = Dimensions.get('window').width - 40;
 
 type TPickerMode = 'date' | 'time' | 'datetime';
 
@@ -56,6 +59,7 @@ interface IDatePickerProps {
 
 const DatePicker = ({ value, onChange, mode = 'date' }: IDatePickerProps) => {
   const [iosOpen, setIosOpen] = useState(false);
+  const [iosDraft, setIosDraft] = useState(() => parseValueToDate(value, mode));
   const fmt = VALUE_FORMAT[mode];
   const displayText = value.trim()
     ? dayjs(parseValueToDate(value, mode)).format(fmt)
@@ -90,8 +94,19 @@ const DatePicker = ({ value, onChange, mode = 'date' }: IDatePickerProps) => {
     }
   };
 
-  const onIosChange = (_e: DateTimePickerEvent, selected?: Date) => {
-    if (selected != null) commit(selected);
+  useEffect(() => {
+    if (iosOpen) {
+      setIosDraft(parseValueToDate(value, mode));
+    }
+  }, [iosOpen, value, mode]);
+
+  const onIosPickerChange = (_e: DateTimePickerEvent, selected?: Date) => {
+    if (selected != null) setIosDraft(selected);
+  };
+
+  const onIosConfirm = () => {
+    commit(iosDraft);
+    setIosOpen(false);
   };
 
   return (
@@ -112,26 +127,36 @@ const DatePicker = ({ value, onChange, mode = 'date' }: IDatePickerProps) => {
 
       {Platform.OS === 'ios' ? (
         <Modal
-          visible={iosOpen}
+          open={iosOpen}
+          onClose={() => setIosOpen(false)}
           animationType="slide"
-          presentationStyle="pageSheet"
-          onRequestClose={() => setIosOpen(false)}
+          width={IOS_SHEET_WIDTH}
+          style={styles.iosModalPanel}
         >
           <View style={styles.iosSheet}>
-            <Pressable
-              style={styles.iosClose}
-              onPress={() => setIosOpen(false)}
-              hitSlop={12}
-              accessibilityRole="button"
-              accessibilityLabel="닫기"
-            >
-              <Text style={styles.iosCloseText}>닫기</Text>
-            </Pressable>
+            <View style={styles.iosToolbar}>
+              <Pressable
+                onPress={() => setIosOpen(false)}
+                hitSlop={12}
+                accessibilityRole="button"
+                accessibilityLabel="취소"
+              >
+                <Text style={styles.iosToolbarSecondary}>취소</Text>
+              </Pressable>
+              <Pressable
+                onPress={onIosConfirm}
+                hitSlop={12}
+                accessibilityRole="button"
+                accessibilityLabel="확인"
+              >
+                <Text style={styles.iosToolbarPrimary}>확인</Text>
+              </Pressable>
+            </View>
             <DateTimePicker
-              value={parseValueToDate(value, mode)}
+              value={iosDraft}
               mode={toNativeMode(mode)}
               display="spinner"
-              onChange={onIosChange}
+              onChange={onIosPickerChange}
               locale="ko-KR"
             />
           </View>
@@ -171,22 +196,32 @@ const styles = StyleSheet.create({
     color: theme.colors.Sub.Black[100]
   },
 
+  iosModalPanel: {
+    paddingHorizontal: 0,
+    paddingVertical: 0
+  },
+
   iosSheet: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingBottom: 24,
     backgroundColor: theme.colors.Main.White
   },
 
-  iosClose: {
-    alignSelf: 'flex-end',
+  iosToolbar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 12
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: theme.colors.Sub.Black[30]
   },
 
-  iosCloseText: {
+  iosToolbarPrimary: {
     ...theme.typo.Body1_13_Regular,
-
     color: theme.colors.Main.Primary
+  },
+
+  iosToolbarSecondary: {
+    ...theme.typo.Body1_13_Regular,
+    color: theme.colors.Sub.Black[100]
   }
 });

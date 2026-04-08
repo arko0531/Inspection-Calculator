@@ -1,4 +1,4 @@
-export interface IHomeCalcFormProps {
+export interface ICalcFormProps {
   name: string; // 제품명
   count: number; // 수량
   unit: string; // 인원 수

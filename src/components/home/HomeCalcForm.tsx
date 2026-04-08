@@ -1,19 +1,28 @@
-import ScrollView from '@/components/common/layout/ScrollView';
 import { StyleSheet, View } from 'react-native';
 import { useForm } from 'react-hook-form';
-import { IHomeCalcFormProps } from '@/types/home';
-import { useMemo, useState } from 'react';
+import { ICalcFormProps } from '@/types/home';
+import { useMemo } from 'react';
 import Input from '@/components/common/input';
 import FormLayout from '@/components/common/layout/FormLayout';
 import DatePicker from '@/components/common/datePicker';
 import Button from '@/components/common/button';
-import CalcResultModal from '@/components/home/modal/CalcResultModal';
+import dayjs from 'dayjs';
+import { TResult } from '@/types/common';
+import useDidMountEffect from '@/hooks/useDidMountEffect';
 
-const HomeCalcForm = () => {
-  const [isOpenResultModal, setIsOpenResultModal] = useState(false);
+interface IHomeCalcFormProps {
+  setResult: React.Dispatch<React.SetStateAction<TResult>>;
+  setIsShowResult: React.Dispatch<React.SetStateAction<boolean>>;
+  resetForm: number;
+}
 
+const HomeCalcForm = ({
+  setResult,
+  setIsShowResult,
+  resetForm
+}: IHomeCalcFormProps) => {
   const defaultValues = useMemo(
-    (): IHomeCalcFormProps => ({
+    (): ICalcFormProps => ({
       name: '',
       count: 0,
       unit: '',
@@ -23,19 +32,55 @@ const HomeCalcForm = () => {
     []
   );
 
-  const { control, handleSubmit } = useForm<IHomeCalcFormProps>({
+  const { control, handleSubmit, reset } = useForm<ICalcFormProps>({
     mode: 'onSubmit',
     defaultValues
   });
 
-  const onSubmit = (data: IHomeCalcFormProps) => {
-    console.log(data);
-    setIsOpenResultModal(true);
+  useDidMountEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset, resetForm]);
+
+  const onSubmit = (data: ICalcFormProps) => {
+    const { name, count, unit, perHour, startTime } = data;
+
+    const countN = Number(count);
+    const unitN = Number(unit);
+    const perHourN = Number(perHour);
+
+    // 인당 검사 개수: 전체 수량을 인원으로 나눈 값
+    const perPerson = countN / unitN;
+    const perPersonLabel = `${perPerson.toLocaleString('ko-KR', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 1
+    })}개`;
+
+    // 소요 시간(시간): 팀 처리량(인원 × 시간당) 기준으로 전체 수량을 나눔
+    const hoursTotal = countN / (unitN * perHourN);
+    const totalMinutes = Math.round(hoursTotal * 60);
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    const durationLabel =
+      h === 0 ? `${m}분` : m === 0 ? `${h}시간` : `${h}시간 ${m}분`;
+
+    // 종료 시간: 시작(HH:mm)에 소요 분을 더함
+    const start = dayjs(startTime.trim(), 'HH:mm', true);
+    const endTimeLabel = start.isValid()
+      ? start.add(totalMinutes, 'minute').format('HH:mm')
+      : '';
+
+    setResult({
+      perPerson: perPersonLabel,
+      duration: durationLabel,
+      endTime: endTimeLabel
+    });
+
+    setIsShowResult(true);
   };
 
   return (
     <>
-      <ScrollView style={styles.container}>
+      <View>
         <FormLayout control={control} name="name" title="제품명">
           {({ value, onChange }) => (
             <Input
@@ -134,14 +179,7 @@ const HomeCalcForm = () => {
         <View style={styles.buttonContainer}>
           <Button title="계산하기" onPress={handleSubmit(onSubmit)} />
         </View>
-      </ScrollView>
-
-      {isOpenResultModal && (
-        <CalcResultModal
-          open={isOpenResultModal}
-          onClose={() => setIsOpenResultModal(false)}
-        />
-      )}
+      </View>
     </>
   );
 };
@@ -149,9 +187,7 @@ const HomeCalcForm = () => {
 export default HomeCalcForm;
 
 const styles = StyleSheet.create({
-  container: { gap: 2 },
-
   buttonContainer: {
-    marginTop: 14
+    marginTop: 8
   }
 });
