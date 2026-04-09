@@ -1,3 +1,4 @@
+import Button from '@/components/common/button';
 import theme from '@/styles';
 import { getHexOpacity } from '@/utils/getHexOpacity';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -34,6 +35,8 @@ interface IModalProps {
   closeButtonStyle?: StyleProp<ViewStyle>;
   closeIconColor?: string;
   title?: string | React.ReactNode;
+  onOk?: () => void;
+  okButtonType?: 'primary' | 'warning';
 }
 
 const Modal = ({
@@ -49,7 +52,9 @@ const Modal = ({
   closeButton = false,
   title,
   closeButtonStyle,
-  closeIconColor
+  closeIconColor,
+  onOk,
+  okButtonType
 }: IModalProps) => {
   const usePanelSlide = animationType === 'slide';
 
@@ -108,9 +113,20 @@ const Modal = ({
           </View>
         )}
         {children}
+
+        {onOk && (
+          <View style={styles.confirmContainer}>
+            <Button
+              title="확인"
+              onPress={onOk}
+              btnType={okButtonType ?? 'primary'}
+            />
+            <Button title="취소" onPress={onClose} btnType="outline" />
+          </View>
+        )}
       </>
     );
-  }, [title, children]);
+  }, [title, children, onOk, onClose, okButtonType]);
 
   const CloseButton = useMemo(() => {
     return (
@@ -209,8 +225,7 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    marginBottom: 20,
-    paddingLeft: 4
+    marginBottom: 20
   },
 
   title: {
@@ -226,6 +241,12 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.Main.White,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+
+  confirmContainer: {
+    justifyContent: 'center',
+    gap: 10,
+    marginTop: 20
   }
 });
 

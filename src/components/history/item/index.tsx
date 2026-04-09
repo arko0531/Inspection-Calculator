@@ -23,25 +23,25 @@ const HistoryCard = ({ item, colorIndex }: IHistoryCardProps) => {
 
       <View style={styles.contentContainer}>
         <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-          {item.name}
+          {item.name || '미지정'}
         </Text>
 
         <View style={styles.itemContainer}>
           <HistoryCardItemPair
-            first={{ name: '수량', value: item.count }}
-            second={{ name: '인원', value: item.unit }}
+            first={{ name: '수량', value: item.count || '0' }}
+            second={{ name: '인원', value: item.unit || '0' }}
           />
           <HistoryCardItemPair
-            first={{ name: '시간당 검사수량', value: item.perHour }}
-            second={{ name: '소요 시간', value: item.duration }}
+            first={{ name: '시간당 검사수량', value: item.perHour || '0' }}
+            second={{ name: '소요 시간', value: item.duration || '0' }}
           />
           <HistoryCardItemPair
-            first={{ name: '시작 시간', value: item.startTime }}
-            second={{ name: '종료 시간', value: item.endTime }}
+            first={{ name: '시작 시간', value: item.startTime || '00:00' }}
+            second={{ name: '종료 시간', value: item.endTime || '00:00' }}
           />
         </View>
 
-        <Text style={styles.time}>{item.updateTs}</Text>
+        <Text style={styles.time}>{item.updateTs || '00:00:00'}</Text>
       </View>
     </View>
   );
