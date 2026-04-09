@@ -1,28 +1,44 @@
 import theme from '@/styles';
 import { KeyboardTypeOptions, StyleSheet, TextInput, View } from 'react-native';
+import CurrencyInput from 'react-native-currency-input';
 
 interface IInputProps {
-  value: string;
-  onChangeText: (text: string) => void;
+  value: string | number;
+  onChange: (text: string) => void;
   placeholder?: string;
   type?: KeyboardTypeOptions;
+  number?: boolean;
 }
 
 const Input = ({
   value,
-  onChangeText,
+  onChange,
   placeholder,
-  type = 'default'
+  type = 'default',
+  number = false
 }: IInputProps) => {
   return (
     <View>
-      <TextInput
-        style={styles.input}
-        placeholder={placeholder}
-        value={value}
-        onChangeText={onChangeText}
-        keyboardType={type}
-      />
+      {number && type === 'numeric' ? (
+        <CurrencyInput
+          style={styles.input}
+          placeholder={placeholder}
+          value={value === '' ? null : Number(value)}
+          onChangeValue={(num) => onChange(num == null ? '' : String(num))}
+          delimiter=","
+          separator="."
+          precision={0}
+          keyboardType={type}
+        />
+      ) : (
+        <TextInput
+          style={styles.input}
+          placeholder={placeholder}
+          value={String(value)}
+          onChangeText={onChange}
+          keyboardType={type}
+        />
+      )}
     </View>
   );
 };

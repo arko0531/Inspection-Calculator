@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 interface IButtonProps {
   title: string;
   onPress: () => void;
-  btnType?: 'primary' | 'white';
+  btnType?: 'primary' | 'outline' | 'warning';
 }
 
 const Button = ({ title, onPress, btnType = 'primary' }: IButtonProps) => {
@@ -23,7 +23,7 @@ const Button = ({ title, onPress, btnType = 'primary' }: IButtonProps) => {
             color: theme.colors.Main.White
           }
         };
-      case 'white':
+      case 'outline':
         return {
           button: {
             backgroundColor: theme.colors.Main.White,
@@ -35,6 +35,18 @@ const Button = ({ title, onPress, btnType = 'primary' }: IButtonProps) => {
           },
           buttonText: {
             color: theme.colors.Main.Black
+          }
+        };
+      case 'warning':
+        return {
+          button: {
+            backgroundColor: theme.colors.Main.Warning
+          },
+          buttonPressed: {
+            backgroundColor: theme.colors.Sub.Red[100]
+          },
+          buttonText: {
+            color: theme.colors.Main.White
           }
         };
     }

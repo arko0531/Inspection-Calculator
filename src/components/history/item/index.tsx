@@ -1,42 +1,47 @@
 import theme from '@/styles';
 import { StyleSheet, Text, View } from 'react-native';
-import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { getHexOpacity } from '@/utils/getHexOpacity';
 import HistoryCardItemPair from '@/components/history/item/HistoryCardItemPair';
 import { ACCENT_COLORS } from '@/constants/accentColors';
+import { THistoryItem } from '@/types/common';
 
-const HistoryCard = () => {
+interface IHistoryCardProps {
+  item: THistoryItem;
+  colorIndex: number;
+}
+
+const HistoryCard = ({ item, colorIndex }: IHistoryCardProps) => {
+  const color = ACCENT_COLORS[colorIndex % ACCENT_COLORS.length];
+  const iconBg = getHexOpacity(color, 0.1);
+
   return (
     <View style={styles.container}>
-      <View style={styles.iconContainer}>
-        <SimpleLineIcons
-          name="social-dropbox"
-          size={22}
-          color={theme.colors.Main.Primary}
-        />
+      <View style={[styles.iconContainer, { backgroundColor: iconBg }]}>
+        <FontAwesome5 name="box" size={18} color={color} />
       </View>
 
       <View style={styles.contentContainer}>
         <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-          제품명
+          {item.name || '미지정'}
         </Text>
 
         <View style={styles.itemContainer}>
           <HistoryCardItemPair
-            first={{ name: '수량', value: '1,400' }}
-            second={{ name: '인원', value: '10' }}
+            first={{ name: '수량', value: item.count || '0' }}
+            second={{ name: '인원', value: item.unit || '0' }}
           />
           <HistoryCardItemPair
-            first={{ name: '시간당 검사수량', value: '200' }}
-            second={{ name: '소요 시간', value: '1시간' }}
+            first={{ name: '시간당 검사수량', value: item.perHour || '0' }}
+            second={{ name: '소요 시간', value: item.duration || '0' }}
           />
           <HistoryCardItemPair
-            first={{ name: '시작 시간', value: '10:00' }}
-            second={{ name: '종료 시간', value: '11:00' }}
+            first={{ name: '시작 시간', value: item.startTime || '00:00' }}
+            second={{ name: '종료 시간', value: item.endTime || '00:00' }}
           />
         </View>
 
-        <Text style={styles.time}>2026-04-08 10:00:00</Text>
+        <Text style={styles.time}>{item.updateTs || '00:00:00'}</Text>
       </View>
     </View>
   );
@@ -62,7 +67,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 10,
-    backgroundColor: getHexOpacity(theme.colors.Main.Primary, 0.1),
     padding: 4,
     alignItems: 'center',
     justifyContent: 'center'
@@ -80,7 +84,7 @@ const styles = StyleSheet.create({
   },
 
   itemContainer: {
-    gap: 4
+    gap: 6
   },
 
   time: {
