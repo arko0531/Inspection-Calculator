@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { Platform, StatusBar } from 'react-native';
 import 'react-native-reanimated';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import Toast from '@/components/common/toast';
 
 export default function RootLayout() {
   const backgroundColor = theme.colors.Main.White;
@@ -46,6 +47,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         </Stack>
       </SafeAreaView>
+      <Toast />
     </SafeAreaProvider>
   );
 }

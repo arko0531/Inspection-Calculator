@@ -3,7 +3,7 @@ import HistoryCard from '@/components/history/item';
 import theme from '@/styles';
 import { STORAGE_KEYS } from '@/constants/keys';
 import { getData, removeData } from '@/utils/storage/asyncStorage';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Modal from '@/components/common/modal';
 import { THistoryItem } from '@/types/common';
 import { useCallback, useState } from 'react';
@@ -11,6 +11,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Spinner from '@/components/common/spinner';
 import { useFocusEffect } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { toast } from '@/utils/toast';
+import FlatScrollView from '@/components/common/layout/FlatScrollView';
 
 const History = () => {
   const [historyData, setHistoryData] = useState<THistoryItem[]>([]);
@@ -46,8 +48,10 @@ const History = () => {
     try {
       await removeData(STORAGE_KEYS.CALC_HISTORY);
       setHistoryData([]);
+      toast.success('기록이 삭제되었습니다.');
     } catch (error) {
       console.error('기록 삭제 실패', error);
+      toast.error('기록 삭제 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
@@ -69,17 +73,16 @@ const History = () => {
         />
 
         {historyData?.length > 0 ? (
-          <FlatList
-            contentContainerStyle={styles.scrollContainer}
+          <FlatScrollView
+            style={styles.scrollContainer}
             data={historyData}
-            renderItem={({ item, index }) => (
+            render={({ item, index }) => (
               <HistoryCard
                 item={item}
                 colorIndex={historyData.length - 1 - index}
               />
             )}
-            keyExtractor={(item, index) => item.updateTs + index}
-            showsVerticalScrollIndicator={false}
+            itemKey={(item, index) => `${item.updateTs}-${index}`}
           />
         ) : (
           <View style={styles.centerContainer}>

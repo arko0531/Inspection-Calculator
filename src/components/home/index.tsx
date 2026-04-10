@@ -5,6 +5,7 @@ import HomeCalcForm from '@/components/home/HomeCalcForm';
 import CalcResultModal from '@/components/home/modal/CalcResultModal';
 import theme from '@/styles';
 import { TResult } from '@/types/common';
+import { toast } from '@/utils/toast';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -25,6 +26,7 @@ const Home = () => {
     });
     setIsShowResult(false);
     setResetForm((prev) => prev + 1);
+    toast.success('입력값이 초기화되었습니다.');
   };
 
   return (
@@ -71,8 +73,7 @@ const styles = StyleSheet.create({
   },
 
   scrollContainer: {
-    gap: 26,
-    paddingBottom: 26
+    gap: 26
   },
 
   resetButton: {
