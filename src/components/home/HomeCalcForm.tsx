@@ -12,6 +12,7 @@ import useDidMountEffect from '@/hooks/useDidMountEffect';
 import { STORAGE_KEYS } from '@/constants/keys';
 import { getData, setData } from '@/utils/storage/asyncStorage';
 import Spinner from '@/components/common/spinner';
+import { toast } from '@/utils/toast';
 
 interface IHomeCalcFormProps {
   setResult: React.Dispatch<React.SetStateAction<TResult>>;
@@ -115,8 +116,10 @@ const HomeCalcForm = ({
       });
 
       setIsShowResult(true);
+      toast.success('계산 결과가 저장되었습니다.');
     } catch (error) {
       console.error('기록 저장 실패', error);
+      toast.error('기록 저장 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }

@@ -20,7 +20,7 @@ const ScrollView = ({
   return (
     <RNScrollView
       showsVerticalScrollIndicator={showScrollbar}
-      contentContainerStyle={style}
+      contentContainerStyle={[style, { paddingBottom: 26 }]}
       keyboardShouldPersistTaps="handled"
       {...props}
     >
