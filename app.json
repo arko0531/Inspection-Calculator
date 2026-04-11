@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "inspection-calculator",
+    "name": "검사 계산기",
     "slug": "inspection-calculator",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -12,14 +12,9 @@
       "supportsTablet": false
     },
     "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#ffffff",
-        "foregroundImage": "./src/assets/images/foregroundImage.png",
-        "backgroundImage": "./src/assets/images/backgroundImage.png",
-        "monochromeImage": "./src/assets/images/monochromeImage.png"
-      },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.arko.inspectioncalculator"
     },
     "web": {
       "output": "static",
@@ -41,6 +36,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "f06e0e74-826c-4878-bc75-e2fcb4aac170"
+      }
     }
   }
 }
