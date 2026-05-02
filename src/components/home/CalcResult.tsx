@@ -12,7 +12,7 @@ interface ICalcResultProps {
 }
 
 const CalcResult = ({ result }: ICalcResultProps) => {
-  const { perPerson, duration, endTime } = result;
+  const isPerHour = result.calcType === 'perHour';
 
   return (
     <View style={styles.container}>
@@ -28,35 +28,79 @@ const CalcResult = ({ result }: ICalcResultProps) => {
         </View>
       </View>
 
-      <CalcResultItem
-        icon={
-          <FontAwesome
-            name="user"
-            size={14}
-            color={theme.colors.Main.Primary}
+      {isPerHour ? (
+        <>
+          <CalcResultItem
+            icon={
+              <Ionicons
+                name="timer-outline"
+                size={14}
+                color={theme.colors.Main.Primary}
+              />
+            }
+            title="시간당 검사 수량"
+            value={result.perHour}
           />
-        }
-        title="인당 검사 개수"
-        value={perPerson}
-      />
-      <CalcResultItem
-        icon={
-          <Octicons
-            name="clock-fill"
-            size={14}
-            color={theme.colors.Main.Primary}
+          <CalcResultItem
+            icon={
+              <FontAwesome
+                name="user"
+                size={14}
+                color={theme.colors.Main.Primary}
+              />
+            }
+            title="인당 검사 수량"
+            value={result.perPerson}
           />
-        }
-        title="소요 시간"
-        value={duration}
-      />
-      <CalcResultItem
-        icon={
-          <Ionicons name="flag" size={14} color={theme.colors.Main.Primary} />
-        }
-        title="종료 시간"
-        value={endTime}
-      />
+          <CalcResultItem
+            icon={
+              <Octicons
+                name="clock-fill"
+                size={14}
+                color={theme.colors.Main.Primary}
+              />
+            }
+            title="소요 시간"
+            value={result.duration}
+          />
+        </>
+      ) : (
+        <>
+          <CalcResultItem
+            icon={
+              <FontAwesome
+                name="user"
+                size={14}
+                color={theme.colors.Main.Primary}
+              />
+            }
+            title="인당 검사 수량"
+            value={result.perPerson}
+          />
+          <CalcResultItem
+            icon={
+              <Octicons
+                name="clock-fill"
+                size={14}
+                color={theme.colors.Main.Primary}
+              />
+            }
+            title="소요 시간"
+            value={result.duration}
+          />
+          <CalcResultItem
+            icon={
+              <Ionicons
+                name="flag"
+                size={14}
+                color={theme.colors.Main.Primary}
+              />
+            }
+            title="종료 시간"
+            value={result.endTime}
+          />
+        </>
+      )}
     </View>
   );
 };

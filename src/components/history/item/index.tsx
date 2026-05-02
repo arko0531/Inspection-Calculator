@@ -5,6 +5,8 @@ import { getHexOpacity } from '@/utils/getHexOpacity';
 import HistoryCardItemPair from '@/components/history/item/HistoryCardItemPair';
 import { ACCENT_COLORS } from '@/constants/accentColors';
 import { THistoryItem } from '@/types/common';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 interface IHistoryCardProps {
   item: THistoryItem;
@@ -22,23 +24,46 @@ const HistoryCard = ({ item, colorIndex }: IHistoryCardProps) => {
       </View>
 
       <View style={styles.contentContainer}>
-        <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-          {item.name || '미지정'}
-        </Text>
+        <View style={styles.titleContainer}>
+          {(item.type ?? 'perPerson') === 'perHour' ? (
+            <Ionicons name="timer-outline" size={14} color={color} />
+          ) : (
+            <FontAwesome name="user" size={14} color={color} />
+          )}
+
+          <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+            {item.name || '미지정'}
+          </Text>
+        </View>
 
         <View style={styles.itemContainer}>
           <HistoryCardItemPair
-            first={{ name: '수량', value: item.count || '0' }}
-            second={{ name: '인원', value: item.unit || '0' }}
+            first={{ name: '수량', value: item.count || '-' }}
+            second={{ name: '인원', value: item.unit || '-' }}
           />
           <HistoryCardItemPair
-            first={{ name: '시간당 검사수량', value: item.perHour || '0' }}
+            first={{ name: '인당 검사 수량', value: item.perPerson || '-' }}
+            second={{ name: '시간당 검사 수량', value: item.perHour || '-' }}
+          />
+          <HistoryCardItemPair
+            first={{ name: '소요 시간', value: item.duration || '-' }}
+            second={{
+              name: '시간',
+              value: `${item.startTime || '-'} ~ ${item.endTime || '-'}`
+            }}
+          />
+          {/* <HistoryCardItemPair
+            first={{ name: '시간당 검사 수량', value: item.perHour || '0' }}
             second={{ name: '소요 시간', value: item.duration || '0' }}
+          />
+          <HistoryCardItem
+            name="인당 검사 수량"
+            value={item.perPerson || '0'}
           />
           <HistoryCardItemPair
             first={{ name: '시작 시간', value: item.startTime || '00:00' }}
             second={{ name: '종료 시간', value: item.endTime || '00:00' }}
-          />
+          /> */}
         </View>
 
         <Text style={styles.time}>{item.updateTs || '00:00:00'}</Text>
@@ -70,6 +95,13 @@ const styles = StyleSheet.create({
     padding: 4,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingRight: 12
   },
 
   contentContainer: {

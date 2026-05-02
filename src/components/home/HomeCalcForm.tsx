@@ -15,6 +15,7 @@ import Spinner from '@/components/common/spinner';
 import { toast } from '@/utils/toast';
 import Radio from '@/components/common/radio';
 import { CALC_TYPE_OPTIONS } from '@/constants/radios';
+import { formatDurationFromSeconds } from '@/utils/formatDurationFromSeconds';
 
 interface IHomeCalcFormProps {
   setResult: React.Dispatch<React.SetStateAction<TResult>>;
@@ -54,14 +55,14 @@ const HomeCalcForm = ({
   const onSubmit = async (data: ICalcFormProps) => {
     setLoading(true);
 
-    const { name, count, unit, perHour, startTime } = data;
+    const { name, count, unit, perHour, startTime, endTime } = data;
 
     const countN = Number(count);
     const unitN = Number(unit);
     const perHourN = Number(perHour);
 
     if (type === 'perPerson') {
-      // 인당 검사 개수: 전체 수량을 인원으로 나눈 값
+      // 인당 검사 수량: 전체 수량을 인원으로 나눈 값
       const perPerson = countN / unitN;
       const perPersonLabel = `${perPerson.toLocaleString('ko-KR', {
         minimumFractionDigits: 0,
@@ -72,20 +73,7 @@ const HomeCalcForm = ({
       const hoursTotal = countN / (unitN * perHourN);
       const totalSeconds = Math.round(hoursTotal * 3600);
 
-      const h = Math.floor(totalSeconds / 3600);
-      const m = Math.floor((totalSeconds % 3600) / 60);
-      const s = totalSeconds % 60;
-
-      const durationLabel =
-        h > 0
-          ? s === 0
-            ? `${h}시간 ${m}분`
-            : `${h}시간 ${m}분 ${s}초`
-          : m > 0
-            ? s === 0
-              ? `${m}분`
-              : `${m}분 ${s}초`
-            : `${s}초`;
+      const durationLabel = formatDurationFromSeconds(totalSeconds);
 
       // 종료 시간: 시작(HH:mm)에 소요 분을 더함
       const start = dayjs(startTime.trim(), 'HH:mm', true);
@@ -108,9 +96,71 @@ const HomeCalcForm = ({
 
       await saveStorayHistory(historyData, () => {
         setResult({
+          calcType: 'perPerson',
           perPerson: perPersonLabel,
           duration: durationLabel,
-          endTime: endTimeLabel
+          endTime: endTimeLabel,
+          perHour: ''
+        });
+        setIsShowResult(true);
+      });
+    } else if (type === 'perHour') {
+      const start = dayjs(startTime.trim(), 'HH:mm', true);
+      const endParsed = dayjs(endTime.trim(), 'HH:mm', true);
+
+      if (!start.isValid() || !endParsed.isValid()) {
+        toast.error('시작·종료 시간을 확인해주세요.');
+        setLoading(false);
+        return;
+      }
+
+      let endAt = endParsed;
+      if (!endAt.isAfter(start)) {
+        endAt = endParsed.add(1, 'day');
+      }
+
+      const totalSeconds = endAt.diff(start, 'second');
+      if (totalSeconds <= 0) {
+        toast.error('소요 시간이 0보다 커야 합니다.');
+        setLoading(false);
+        return;
+      }
+
+      const perHourComputed = (countN * 3600) / (unitN * totalSeconds);
+      const perHourLabel = `${perHourComputed.toLocaleString('ko-KR', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 1
+      })}개`;
+
+      const perPerson = countN / unitN;
+      const perPersonLabel = `${perPerson.toLocaleString('ko-KR', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 1
+      })}개`;
+
+      const durationLabel = formatDurationFromSeconds(totalSeconds);
+      const endTimeLabel = endTime.trim();
+
+      const historyData: THistoryItem = {
+        type,
+        name,
+        count: countN.toLocaleString('ko-KR'),
+        unit: unitN.toLocaleString('ko-KR'),
+        perHour: perHourLabel,
+        startTime,
+        endTime: endTimeLabel,
+        perPerson: perPersonLabel,
+        duration: durationLabel,
+        updateTs: dayjs().format('YYYY-MM-DD HH:mm:ss')
+      };
+
+      await saveStorayHistory(historyData, () => {
+        setResult({
+          calcType: 'perHour',
+          perPerson: perPersonLabel,
+          duration: durationLabel,
+          endTime: '',
+          perHour: perHourLabel
         });
         setIsShowResult(true);
       });
@@ -146,7 +196,17 @@ const HomeCalcForm = ({
         <Radio
           options={CALC_TYPE_OPTIONS}
           value={type}
-          onChange={(value) => setType(value as 'perPerson' | 'perHour')}
+          onChange={(value) => {
+            setIsShowResult(false);
+            setResult({
+              calcType: value as TCalcType,
+              perPerson: '',
+              duration: '',
+              endTime: '',
+              perHour: ''
+            });
+            setType(value as 'perPerson' | 'perHour');
+          }}
           type="button"
           style={{
             minHeight: 38,
@@ -218,12 +278,12 @@ const HomeCalcForm = ({
           <FormLayout
             control={control}
             name="perHour"
-            title="시간당 검사수량"
+            title="시간당 검사 수량"
             rules={{
-              required: '시간당 검사수량을 입력해주세요.',
+              required: '시간당 검사 수량을 입력해주세요.',
               validate: (value) => {
                 if (Number(value) <= 0) {
-                  return '시간당 검사수량은 1 이상 입력해주세요.';
+                  return '시간당 검사 수량은 1 이상 입력해주세요.';
                 }
                 return true;
               }
@@ -233,7 +293,7 @@ const HomeCalcForm = ({
               <Input
                 value={value}
                 onChange={onChange}
-                placeholder="시간당 검사수량을 입력해주세요."
+                placeholder="시간당 검사 수량을 입력해주세요."
                 type="numeric"
                 number
               />

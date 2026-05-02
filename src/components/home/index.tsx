@@ -12,17 +12,21 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 const Home = () => {
   const [isShowResult, setIsShowResult] = useState(false);
   const [result, setResult] = useState<TResult>({
+    calcType: 'perPerson',
     perPerson: '',
     duration: '',
-    endTime: ''
+    endTime: '',
+    perHour: ''
   });
   const [resetForm, setResetForm] = useState(0);
 
   const resetHandler = () => {
     setResult({
+      calcType: 'perPerson',
       perPerson: '',
       duration: '',
-      endTime: ''
+      endTime: '',
+      perHour: ''
     });
     setIsShowResult(false);
     setResetForm((prev) => prev + 1);
