@@ -55,7 +55,7 @@ const CalcResult = ({ result }: ICalcResultProps) => {
           <Ionicons name="flag" size={14} color={theme.colors.Main.Primary} />
         }
         title="종료 시간"
-        value={result.endTime}
+        value={endTime}
       />
     </View>
   );

@@ -7,12 +7,14 @@ import FormLayout from '@/components/common/layout/FormLayout';
 import DatePicker from '@/components/common/datePicker';
 import Button from '@/components/common/button';
 import dayjs from 'dayjs';
-import { THistoryItem, TResult } from '@/types/common';
+import { TCalcType, THistoryItem, TResult } from '@/types/common';
 import useDidMountEffect from '@/hooks/useDidMountEffect';
 import { STORAGE_KEYS } from '@/constants/keys';
 import { getData, setData } from '@/utils/storage/asyncStorage';
 import Spinner from '@/components/common/spinner';
 import { toast } from '@/utils/toast';
+import Radio from '@/components/common/radio';
+import { CALC_TYPE_OPTIONS } from '@/constants/radios';
 
 interface IHomeCalcFormProps {
   setResult: React.Dispatch<React.SetStateAction<TResult>>;
@@ -26,6 +28,7 @@ const HomeCalcForm = ({
   resetForm
 }: IHomeCalcFormProps) => {
   const [loading, setLoading] = useState(false);
+  const [type, setType] = useState<TCalcType>('perPerson');
 
   const defaultValues = useMemo(
     (): ICalcFormProps => ({
@@ -33,7 +36,8 @@ const HomeCalcForm = ({
       count: '',
       unit: '',
       perHour: '',
-      startTime: ''
+      startTime: '',
+      endTime: ''
     }),
     []
   );
@@ -56,50 +60,67 @@ const HomeCalcForm = ({
     const unitN = Number(unit);
     const perHourN = Number(perHour);
 
-    // 인당 검사 개수: 전체 수량을 인원으로 나눈 값
-    const perPerson = countN / unitN;
-    const perPersonLabel = `${perPerson.toLocaleString('ko-KR', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 1
-    })}개`;
+    if (type === 'perPerson') {
+      // 인당 검사 개수: 전체 수량을 인원으로 나눈 값
+      const perPerson = countN / unitN;
+      const perPersonLabel = `${perPerson.toLocaleString('ko-KR', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 1
+      })}개`;
 
-    // 소요 시간(초): 팀 처리량(인원 × 시간당) 기준으로 전체 수량을 나눔
-    const hoursTotal = countN / (unitN * perHourN);
-    const totalSeconds = Math.round(hoursTotal * 3600);
+      // 소요 시간(초): 팀 처리량(인원 × 시간당) 기준으로 전체 수량을 나눔
+      const hoursTotal = countN / (unitN * perHourN);
+      const totalSeconds = Math.round(hoursTotal * 3600);
 
-    const h = Math.floor(totalSeconds / 3600);
-    const m = Math.floor((totalSeconds % 3600) / 60);
-    const s = totalSeconds % 60;
+      const h = Math.floor(totalSeconds / 3600);
+      const m = Math.floor((totalSeconds % 3600) / 60);
+      const s = totalSeconds % 60;
 
-    const durationLabel =
-      h > 0
-        ? s === 0
-          ? `${h}시간 ${m}분`
-          : `${h}시간 ${m}분 ${s}초`
-        : m > 0
+      const durationLabel =
+        h > 0
           ? s === 0
-            ? `${m}분`
-            : `${m}분 ${s}초`
-          : `${s}초`;
+            ? `${h}시간 ${m}분`
+            : `${h}시간 ${m}분 ${s}초`
+          : m > 0
+            ? s === 0
+              ? `${m}분`
+              : `${m}분 ${s}초`
+            : `${s}초`;
 
-    // 종료 시간: 시작(HH:mm)에 소요 분을 더함
-    const start = dayjs(startTime.trim(), 'HH:mm', true);
-    const endTimeLabel = start.isValid()
-      ? start.add(totalSeconds, 'second').format('HH:mm')
-      : '';
+      // 종료 시간: 시작(HH:mm)에 소요 분을 더함
+      const start = dayjs(startTime.trim(), 'HH:mm', true);
+      const endTimeLabel = start.isValid()
+        ? start.add(totalSeconds, 'second').format('HH:mm')
+        : '';
 
-    const historyData: THistoryItem = {
-      name,
-      count: countN.toLocaleString('ko-KR'),
-      unit: unitN.toLocaleString('ko-KR'),
-      perHour: perHourN.toLocaleString('ko-KR'),
-      startTime,
-      endTime: endTimeLabel,
-      perPerson: perPersonLabel,
-      duration: durationLabel,
-      updateTs: dayjs().format('YYYY-MM-DD HH:mm:ss')
-    };
+      const historyData: THistoryItem = {
+        type,
+        name,
+        count: countN.toLocaleString('ko-KR'),
+        unit: unitN.toLocaleString('ko-KR'),
+        perHour: perHourN.toLocaleString('ko-KR'),
+        startTime,
+        endTime: endTimeLabel,
+        perPerson: perPersonLabel,
+        duration: durationLabel,
+        updateTs: dayjs().format('YYYY-MM-DD HH:mm:ss')
+      };
 
+      await saveStorayHistory(historyData, () => {
+        setResult({
+          perPerson: perPersonLabel,
+          duration: durationLabel,
+          endTime: endTimeLabel
+        });
+        setIsShowResult(true);
+      });
+    }
+  };
+
+  const saveStorayHistory = async (
+    historyData: THistoryItem,
+    successCallback: () => void
+  ) => {
     try {
       const prevData =
         (await getData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY)) ?? [];
@@ -109,13 +130,7 @@ const HomeCalcForm = ({
 
       await setData<THistoryItem[]>(STORAGE_KEYS.CALC_HISTORY, totalData);
 
-      setResult({
-        perPerson: perPersonLabel,
-        duration: durationLabel,
-        endTime: endTimeLabel
-      });
-
-      setIsShowResult(true);
+      successCallback();
       toast.success('계산 결과가 저장되었습니다.');
     } catch (error) {
       console.error('기록 저장 실패', error);
@@ -128,6 +143,17 @@ const HomeCalcForm = ({
   return (
     <>
       <View>
+        <Radio
+          options={CALC_TYPE_OPTIONS}
+          value={type}
+          onChange={(value) => setType(value as 'perPerson' | 'perHour')}
+          type="button"
+          style={{
+            minHeight: 38,
+            marginBottom: 24
+          }}
+        />
+
         <FormLayout control={control} name="name" title="제품명">
           {({ value, onChange }) => (
             <Input
@@ -188,30 +214,32 @@ const HomeCalcForm = ({
           )}
         </FormLayout>
 
-        <FormLayout
-          control={control}
-          name="perHour"
-          title="시간당 검사수량"
-          rules={{
-            required: '시간당 검사수량을 입력해주세요.',
-            validate: (value) => {
-              if (Number(value) <= 0) {
-                return '시간당 검사수량은 1 이상 입력해주세요.';
+        {type === 'perPerson' && (
+          <FormLayout
+            control={control}
+            name="perHour"
+            title="시간당 검사수량"
+            rules={{
+              required: '시간당 검사수량을 입력해주세요.',
+              validate: (value) => {
+                if (Number(value) <= 0) {
+                  return '시간당 검사수량은 1 이상 입력해주세요.';
+                }
+                return true;
               }
-              return true;
-            }
-          }}
-        >
-          {({ value, onChange }) => (
-            <Input
-              value={value}
-              onChange={onChange}
-              placeholder="시간당 검사수량을 입력해주세요."
-              type="numeric"
-              number
-            />
-          )}
-        </FormLayout>
+            }}
+          >
+            {({ value, onChange }) => (
+              <Input
+                value={value}
+                onChange={onChange}
+                placeholder="시간당 검사수량을 입력해주세요."
+                type="numeric"
+                number
+              />
+            )}
+          </FormLayout>
+        )}
 
         <FormLayout
           control={control}
@@ -225,6 +253,21 @@ const HomeCalcForm = ({
             <DatePicker value={value} onChange={onChange} mode="time" />
           )}
         </FormLayout>
+
+        {type === 'perHour' && (
+          <FormLayout
+            control={control}
+            name="endTime"
+            title="종료 시간"
+            rules={{
+              required: '종료 시간을 선택해주세요.'
+            }}
+          >
+            {({ value, onChange }) => (
+              <DatePicker value={value} onChange={onChange} mode="time" />
+            )}
+          </FormLayout>
+        )}
 
         <View style={styles.buttonContainer}>
           <Button title="계산하기" onPress={handleSubmit(onSubmit)} />

@@ -4,7 +4,10 @@ export type TResult = {
   endTime: string;
 };
 
+export type TCalcType = 'perPerson' | 'perHour';
+
 export type THistoryItem = {
+  type: TCalcType;
   name: string;
   count: string;
   unit: string;
