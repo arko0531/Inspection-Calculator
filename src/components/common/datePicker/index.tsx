@@ -110,7 +110,7 @@ const DatePicker = ({ value, onChange, mode = 'date' }: IDatePickerProps) => {
   };
 
   return (
-    <>
+    <View style={styles.root}>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={PLACEHOLDER[mode]}
@@ -119,6 +119,7 @@ const DatePicker = ({ value, onChange, mode = 'date' }: IDatePickerProps) => {
       >
         <Text
           style={[styles.valueText, !displayText && styles.placeholderText]}
+          numberOfLines={1}
         >
           {displayText || PLACEHOLDER[mode]}
         </Text>
@@ -162,13 +163,18 @@ const DatePicker = ({ value, onChange, mode = 'date' }: IDatePickerProps) => {
           </View>
         </Modal>
       ) : null}
-    </>
+    </View>
   );
 };
 
 export default DatePicker;
 
 const styles = StyleSheet.create({
+  root: {
+    width: '100%',
+    minWidth: 0
+  },
+
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -187,6 +193,7 @@ const styles = StyleSheet.create({
   },
 
   valueText: {
+    flexShrink: 1,
     color: theme.colors.Main.Black,
 
     ...theme.typo.Body1_13_Regular

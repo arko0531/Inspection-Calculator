@@ -39,7 +39,7 @@ function FormLayout<T extends FieldValues>({
   });
 
   return (
-    <View {...viewProps}>
+    <View style={style} {...viewProps}>
       <View style={styles.titleContainer}>
         {title && <Text style={styles.title}>{title}</Text>}
         {rules?.required && <Text style={styles.required}>*</Text>}
@@ -65,10 +65,12 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4
+    gap: 4,
+    alignSelf: 'stretch'
   },
 
   title: {
+    flexShrink: 1,
     color: theme.colors.Main.Black,
     marginBottom: 6,
 
