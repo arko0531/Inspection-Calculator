@@ -43,7 +43,7 @@ const HomeCalcForm = ({
     []
   );
 
-  const { control, handleSubmit, reset } = useForm<ICalcFormProps>({
+  const { control, handleSubmit, reset, watch } = useForm<ICalcFormProps>({
     mode: 'onSubmit',
     defaultValues
   });
@@ -192,7 +192,7 @@ const HomeCalcForm = ({
 
   return (
     <>
-      <View>
+      <View style={styles.formRoot}>
         <Radio
           options={CALC_TYPE_OPTIONS}
           value={type}
@@ -214,7 +214,7 @@ const HomeCalcForm = ({
           }}
         />
 
-        <FormLayout control={control} name="name" title="제품명">
+        {/* <FormLayout control={control} name="name" title="제품명">
           {({ value, onChange }) => (
             <Input
               value={value}
@@ -222,68 +222,19 @@ const HomeCalcForm = ({
               placeholder="제품명을 입력해주세요."
             />
           )}
-        </FormLayout>
+        </FormLayout> */}
 
-        <FormLayout
-          control={control}
-          name="count"
-          title="수량"
-          rules={{
-            required: '수량을 입력해주세요.',
-            validate: (value) => {
-              if (Number(value) <= 0) {
-                return '수량은 1 이상 입력해주세요.';
-              }
-              return true;
-            }
-          }}
-        >
-          {({ value, onChange }) => (
-            <Input
-              value={value}
-              onChange={onChange}
-              placeholder="수량을 입력해주세요."
-              type="numeric"
-              number
-            />
-          )}
-        </FormLayout>
-
-        <FormLayout
-          control={control}
-          name="unit"
-          title="인원 수"
-          rules={{
-            required: '인원 수를 입력해주세요.',
-            validate: (value) => {
-              if (Number(value) <= 0) {
-                return '인원 수는 1 이상 입력해주세요.';
-              }
-              return true;
-            }
-          }}
-        >
-          {({ value, onChange }) => (
-            <Input
-              value={value}
-              onChange={onChange}
-              placeholder="인원 수를 입력해주세요."
-              type="numeric"
-              number
-            />
-          )}
-        </FormLayout>
-
-        {type === 'perPerson' && (
+        <View style={styles.formRow}>
           <FormLayout
             control={control}
-            name="perHour"
-            title="시간당 검사 수량"
+            name="count"
+            title="수량"
+            style={styles.formFieldColumn}
             rules={{
-              required: '시간당 검사 수량을 입력해주세요.',
+              required: '수량을 입력해주세요.',
               validate: (value) => {
                 if (Number(value) <= 0) {
-                  return '시간당 검사 수량은 1 이상 입력해주세요.';
+                  return '수량은 1 이상 입력해주세요.';
                 }
                 return true;
               }
@@ -293,41 +244,120 @@ const HomeCalcForm = ({
               <Input
                 value={value}
                 onChange={onChange}
-                placeholder="시간당 검사 수량을 입력해주세요."
+                placeholder="수량을 입력해주세요."
                 type="numeric"
                 number
               />
             )}
           </FormLayout>
-        )}
 
-        <FormLayout
-          control={control}
-          name="startTime"
-          title="시작 시간"
-          rules={{
-            required: '시작 시간을 선택해주세요.'
-          }}
-        >
-          {({ value, onChange }) => (
-            <DatePicker value={value} onChange={onChange} mode="time" />
-          )}
-        </FormLayout>
-
-        {type === 'perHour' && (
           <FormLayout
             control={control}
-            name="endTime"
-            title="종료 시간"
+            name="unit"
+            title="인원 수"
+            style={styles.formFieldColumn}
             rules={{
-              required: '종료 시간을 선택해주세요.'
+              required: '인원 수를 입력해주세요.',
+              validate: (value) => {
+                if (Number(value) <= 0) {
+                  return '인원 수는 1 이상 입력해주세요.';
+                }
+                return true;
+              }
             }}
           >
             {({ value, onChange }) => (
-              <DatePicker value={value} onChange={onChange} mode="time" />
+              <Input
+                value={value}
+                onChange={onChange}
+                placeholder="인원 수를 입력해주세요."
+                type="numeric"
+                number
+              />
             )}
           </FormLayout>
-        )}
+        </View>
+
+        {/* 항상 2열: 형제 개수 고정 → flex 반반이 깨지지 않음 */}
+        <View style={styles.formRow}>
+          <View style={styles.formFieldColumn}>
+            {type === 'perPerson' ? (
+              <FormLayout
+                control={control}
+                name="perHour"
+                title="시간당 검사 수량"
+                rules={{
+                  required: '시간당 검사 수량을 입력해주세요.',
+                  validate: (value) => {
+                    if (Number(value) <= 0) {
+                      return '시간당 검사 수량은 1 이상 입력해주세요.';
+                    }
+                    return true;
+                  }
+                }}
+              >
+                {({ value, onChange }) => (
+                  <Input
+                    value={value}
+                    onChange={onChange}
+                    placeholder="시간당 검사 수량을 입력해주세요."
+                    type="numeric"
+                    number
+                  />
+                )}
+              </FormLayout>
+            ) : (
+              <FormLayout
+                control={control}
+                name="startTime"
+                title="시작 시간"
+                rules={{
+                  required: '시작 시간을 선택해주세요.'
+                }}
+              >
+                {({ value, onChange }) => (
+                  <DatePicker value={value} onChange={onChange} mode="time" />
+                )}
+              </FormLayout>
+            )}
+          </View>
+
+          <View style={styles.formFieldColumn}>
+            {type === 'perPerson' ? (
+              <FormLayout
+                control={control}
+                name="startTime"
+                title="시작 시간"
+                rules={{
+                  required: '시작 시간을 선택해주세요.'
+                }}
+              >
+                {({ value, onChange }) => (
+                  <DatePicker value={value} onChange={onChange} mode="time" />
+                )}
+              </FormLayout>
+            ) : (
+              <FormLayout
+                control={control}
+                name="endTime"
+                title="종료 시간"
+                rules={{
+                  required: '종료 시간을 선택해주세요.',
+                  validate: (value) => {
+                    if (dayjs(value).isBefore(dayjs(watch('startTime')))) {
+                      return '종료 시간은 시작 시간 이후여야 합니다.';
+                    }
+                    return true;
+                  }
+                }}
+              >
+                {({ value, onChange }) => (
+                  <DatePicker value={value} onChange={onChange} mode="time" />
+                )}
+              </FormLayout>
+            )}
+          </View>
+        </View>
 
         <View style={styles.buttonContainer}>
           <Button title="계산하기" onPress={handleSubmit(onSubmit)} />
@@ -342,6 +372,22 @@ const HomeCalcForm = ({
 export default HomeCalcForm;
 
 const styles = StyleSheet.create({
+  formRoot: {
+    width: '100%'
+  },
+
+  formRow: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12
+  },
+
+  formFieldColumn: {
+    flex: 1,
+    minWidth: 0
+  },
+
   buttonContainer: {
     marginTop: 8
   }

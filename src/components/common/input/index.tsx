@@ -18,7 +18,7 @@ const Input = ({
   number = false
 }: IInputProps) => {
   return (
-    <View>
+    <View style={styles.wrap}>
       {number && type === 'numeric' ? (
         <CurrencyInput
           style={styles.input}
@@ -46,8 +46,16 @@ const Input = ({
 export default Input;
 
 const styles = StyleSheet.create({
-  input: {
+  wrap: {
+    alignSelf: 'stretch',
     width: '100%',
+    minWidth: 0
+  },
+
+  input: {
+    alignSelf: 'stretch',
+    width: '100%',
+    minWidth: 0,
     height: 48,
     borderWidth: 1,
     borderColor: theme.colors.Sub.Black[30],

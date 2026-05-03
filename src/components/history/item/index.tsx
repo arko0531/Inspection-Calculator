@@ -32,7 +32,7 @@ const HistoryCard = ({ item, colorIndex }: IHistoryCardProps) => {
           )}
 
           <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-            {item.name || '미지정'}
+            {item.name || '제품'}
           </Text>
         </View>
 
