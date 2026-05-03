@@ -6,19 +6,27 @@ echo ""
 echo "[pre-commit] Husky: 커밋 전 검사를 시작합니다."
 echo ""
 
-echo "[pre-commit] Prettier 포맷 검사 중..."
+# 타입스크립트 검사
+npm run checkTs
+
+# 빌드 테스트 - 빌드 오류 확인
+echo "🔍 빌드 검사 중..."
+npm run build --if-present || {
+  echo "❌ 빌드에 실패했습니다. 에러를 수정한 후 다시 커밋해주세요."
+  exit 1
+}
+echo "✅ 빌드 검사 완료!"
+
+echo "🔍 Prettier 포맷 검사 중..."
 npx prettier --cache --check .
-echo "[pre-commit] Prettier: 통과"
+echo "✅ Prettier: 통과"
 echo ""
 
-echo "[pre-commit] 린트 검사 중..."
+echo "🔍 린트 검사 중..."
 npm run lint
-echo "[pre-commit] 린트: 통과"
+echo "✅ 린트: 통과"
 echo ""
 
-echo "[pre-commit] 빌드 검사 중..."
-npm run build
-echo "[pre-commit] 빌드: 통과"
 echo ""
-echo "[pre-commit] 모든 검사를 통과했습니다. 커밋을 진행합니다."
+echo "✅ 모든 검사를 통과했습니다. 커밋을 진행합니다."
 echo ""
